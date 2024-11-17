@@ -14,6 +14,7 @@ namespace WebStoreServer.Features.Products
             _productService = productService;
         }
 
+        [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
             var result = await _productService.GetProductsAsync();
