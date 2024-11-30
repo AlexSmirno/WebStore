@@ -1,7 +1,10 @@
-﻿namespace WebStoreServer.Models.Supplies
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebStoreServer.Models.Supplies
 {
     public class Supply
     {
+        [Key]
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public string? Date { get; set; }

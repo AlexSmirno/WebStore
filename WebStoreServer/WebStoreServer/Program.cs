@@ -1,5 +1,10 @@
 
+using Microsoft.EntityFrameworkCore;
+using WebStoreServer.DAL;
+using WebStoreServer.DAL.Repositories;
+using WebStoreServer.Features.Clients;
 using WebStoreServer.Features.Products;
+using WebStoreServer.Features.Supplies;
 
 namespace WebStoreServer
 {
@@ -13,6 +18,19 @@ namespace WebStoreServer
 
             builder.Services.AddControllers();
             builder.Services.AddTransient<ProductService>();
+            builder.Services.AddTransient<ProductRepository>();
+
+            builder.Services.AddTransient<SupplyService>();
+            builder.Services.AddTransient<SupplyRepository>();
+
+            builder.Services.AddTransient<ClientService>();
+            builder.Services.AddTransient<ClientRepository>();
+
+
+            builder.Services.AddDbContext<StoreContext>(options =>
+            {
+                options.UseNpgsql("Host=localhost;Port=5432;Database=store;Username=postgres;Password=admin");
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

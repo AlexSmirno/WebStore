@@ -13,10 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DAL\Repositories\" />
-    <Folder Include="Features\Clients\" />
     <Folder Include="Features\Divisions\" />
-    <Folder Include="Features\Supplies\" />
   </ItemGroup>
 
 </Project>
