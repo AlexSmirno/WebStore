@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebStoreServer.DAL.Repositories;
+using WebStoreServer.Models;
 using WebStoreServer.Models.Clients;
 
 namespace WebStoreServer.Features.Clients
@@ -12,11 +13,48 @@ namespace WebStoreServer.Features.Clients
             _repository = repository;
         }
 
-        public async Task<ActionResult<List<Client>>> GetClientsAsync()
+        public async Task<Result<IEnumerable<Client>>> GetClientsAsync()
         {
-            var products = _repository.GetAllSupplies().ToList();
+            var clients = await _repository.GetAllSuppliesAsync();
 
-            return await Task.FromResult(products);
+            return await Task.FromResult(clients);
+        }
+
+        public async Task<Result<Client>> GetClientByIdAsync(Guid id)
+        {
+            var clients = await _repository.GetClientByIdAsync(id);
+
+            return await Task.FromResult(clients);
+        }
+
+        public async Task<Result<IEnumerable<Client>>> GetClientByNameAsync(string name)
+        {
+            var clients = await _repository.GetClientsByNameAsync(name);
+
+            return await Task.FromResult(clients);
+        }
+
+        public async Task<Result<bool>> CreateClientAsync(Client newClient)
+        {
+            newClient.Id = Guid.NewGuid();
+
+            var res = await _repository.AddClientAsync(newClient);
+
+            return await Task.FromResult(res);
+        }
+
+        public async Task<Result<bool>> UpdateClientAsync(Client newClient)
+        {
+            var res = await _repository.UpdateClientAsync(newClient);
+
+            return await Task.FromResult(res);
+        }
+
+        public async Task<Result<bool>> DeleteClientAsync(Client newClient)
+        {
+            var res = await _repository.DeleteClientAsync(newClient);
+
+            return await Task.FromResult(res);
         }
     }
 }

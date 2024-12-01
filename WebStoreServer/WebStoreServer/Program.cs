@@ -8,7 +8,7 @@ using WebStoreServer.Features.Supplies;
 
 namespace WebStoreServer
 {
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {
@@ -53,5 +53,10 @@ namespace WebStoreServer
 
             app.Run();
         }
+    }
+
+    public partial class Program
+    {
+
     }
 }

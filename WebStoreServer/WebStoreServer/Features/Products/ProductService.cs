@@ -17,21 +17,21 @@ namespace WebStoreServer.Features.Products
 
         public async Task<Result<IEnumerable<Product>>> GetProductsAsync()
         {
-            var products = await _repository.GetAllProducts();
+            var products = await _repository.GetAllProductsAsync();
 
             return await Task.FromResult(products);
         }
 
         public async Task<Result<Product>> GetProductByIdAsync(Guid id)
         {
-            var products = await _repository.GetProductById(id);
+            var products = await _repository.GetProductByIdAsync(id);
 
             return await Task.FromResult(products);
         }
 
         public async Task<Result<IEnumerable<Product>>> GetProductByNameAsync(string name)
         {
-            var products = await _repository.GetProductsByName(name);
+            var products = await _repository.GetProductsByNameAsync(name);
 
             return await Task.FromResult(products);
         }
@@ -40,21 +40,21 @@ namespace WebStoreServer.Features.Products
         {
             newProduct.Id = Guid.NewGuid();
 
-            var res = await _repository.AddProduct(newProduct);
+            var res = await _repository.AddProductAsync(newProduct);
 
             return await Task.FromResult(res);
         }
 
         public async Task<Result<bool>> UpdateProduct(Product newProduct)
         {
-            var res = await _repository.UpdateProduct(newProduct);
+            var res = await _repository.UpdateProductAsync(newProduct);
 
             return await Task.FromResult(res);
         }
 
         public async Task<Result<bool>> DeleteProduct(Product newProduct)
         {
-            var res = await _repository.DeleteProduct(newProduct);
+            var res = await _repository.DeleteProductAsync(newProduct);
 
             return await Task.FromResult(res);
         }

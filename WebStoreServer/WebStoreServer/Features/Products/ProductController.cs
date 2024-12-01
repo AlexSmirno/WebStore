@@ -30,7 +30,7 @@ namespace WebStoreServer.Features.Products
         }
 
 
-        [HttpGet("{ProductName}", Name = "/get")]
+        [HttpGet("{ProductName}", Name = "/get_product")]
         public async Task<ActionResult<List<Product>>> GetProductsByName(string name)
         {
             var result = await _productService.GetProductByNameAsync(name);

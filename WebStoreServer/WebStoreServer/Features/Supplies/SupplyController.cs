@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebStoreServer.Features.Supplies;
+using WebStoreServer.Models.Supplies;
 using WebStoreServer.Models.Supplies;
 
 namespace WebStoreServer.Features.Supplies
@@ -15,16 +17,79 @@ namespace WebStoreServer.Features.Supplies
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Supply>>> GetProducts()
+        public async Task<ActionResult<List<Supply>>> GetSupplies()
         {
-            var result = await _supplyService.GetProductsAsync();
+            var result = await _supplyService.GetSuppliesAsync();
 
-            if (result != null)
+            if (result.IsSucceeded)
             {
-                return await Task.FromResult(result);
+                return await Task.FromResult(result.Data.ToList());
             }
 
-            return NotFound();
+            if (result.ErrorCode == 404) return NotFound();
+
+            return StatusCode(result.ErrorCode, result.ErrorMessage);
+        }
+
+
+        [HttpGet("{SupplyName}", Name = "/get_Supply")]
+        public async Task<ActionResult<Supply>> GetSuppliesByName(Guid id)
+        {
+            var result = await _supplyService.GetSupplyByIdAsync(id);
+
+            if (result.IsSucceeded)
+            {
+                return await Task.FromResult(result.Data);
+            }
+
+            if (result.ErrorCode == 404) return NotFound();
+
+            return StatusCode(result.ErrorCode, result.ErrorMessage);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<bool>> CreateSupply([FromBody] Supply Supply)
+        {
+            var result = await _supplyService.CreateSupply(Supply);
+
+            if (result.IsSucceeded)
+            {
+                return await Task.FromResult(result.Data);
+            }
+
+            if (result.ErrorCode / 100 == 4) return BadRequest();
+
+            return StatusCode(result.ErrorCode, result.ErrorMessage);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateSupply([FromBody] Supply Supply)
+        {
+            var result = await _supplyService.UpdateSupply(Supply);
+
+            if (result.IsSucceeded)
+            {
+                return await Task.FromResult(result.Data);
+            }
+
+            if (result.ErrorCode / 100 == 4) return BadRequest();
+
+            return StatusCode(result.ErrorCode, result.ErrorMessage);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeleteSupply([FromBody] Supply Supply)
+        {
+            var result = await _supplyService.DeleteSupply(Supply);
+
+            if (result.IsSucceeded)
+            {
+                return await Task.FromResult(result.Data);
+            }
+
+            if (result.ErrorCode / 100 == 4) return BadRequest();
+
+            return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
     }
 }

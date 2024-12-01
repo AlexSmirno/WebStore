@@ -14,16 +14,16 @@ namespace WebStoreServer.DAL.Repositories
             _context = context;
         }
 
-        public async Task<Result<IEnumerable<Product>>> GetAllProducts()
+        public async Task<Result<IEnumerable<Product>>> GetAllProductsAsync()
         {
             var products = _context.ProductsTable;
 
             return await Task.FromResult(new Result<IEnumerable<Product>>(products));
         }
 
-        public async Task<Result<Product>> GetProductById(Guid id)
+        public async Task<Result<Product>> GetProductByIdAsync(Guid id)
         {
-            var product = _context.ProductsTable.FirstOrDefault(p => p.Id == id);
+            var product = await _context.ProductsTable.FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -33,11 +33,11 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<Product>(product));
         }
 
-        public async Task<Result<IEnumerable<Product>>> GetProductsByName(string name)
+        public async Task<Result<IEnumerable<Product>>> GetProductsByNameAsync(string name)
         {
             var product = _context.ProductsTable.Where(p => p.ProductName == name);
 
-            if (product == null)
+            if (product == null || product.Count() == 0)
             {
                 return await Task.FromResult(new Result<IEnumerable<Product>> () { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
             }
@@ -45,7 +45,7 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<IEnumerable<Product>>(product));
         }
 
-        public async Task<Result<bool>> AddProduct(Product newProduct)
+        public async Task<Result<bool>> AddProductAsync(Product newProduct)
         {
             try
             {
@@ -64,11 +64,11 @@ namespace WebStoreServer.DAL.Repositories
         }
 
 
-        public async Task<Result<bool>> UpdateProduct(Product newProduct)
+        public async Task<Result<bool>> UpdateProductAsync(Product newProduct)
         {
             try
             {
-                var currentProduct = _context.ProductsTable.FindAsync(newProduct.Id).Result;
+                var currentProduct = await _context.ProductsTable.FindAsync(newProduct.Id);
 
                 if (currentProduct == null)
                 {
@@ -92,9 +92,9 @@ namespace WebStoreServer.DAL.Repositories
             }
         }
 
-        public async Task<Result<bool>> DeleteProduct(Product product)
+        public async Task<Result<bool>> DeleteProductAsync(Product product)
         {
-            int count = _context.ProductsTable.Where(p => p.Id == product.Id).ExecuteDeleteAsync().Result;
+            int count = await _context.ProductsTable.Where(p => p.Id == product.Id).ExecuteDeleteAsync();
 
             if (count == 0)
             {
