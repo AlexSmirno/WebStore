@@ -22,7 +22,7 @@ namespace WebStoreServer.Features.Products
             return await Task.FromResult(products);
         }
 
-        public async Task<Result<Product>> GetProductByIdAsync(Guid id)
+        public async Task<Result<Product>> GetProductByIdAsync(int id)
         {
             var products = await _repository.GetProductByIdAsync(id);
 
@@ -38,8 +38,6 @@ namespace WebStoreServer.Features.Products
 
         public async Task<Result<bool>> CreateProduct(Product newProduct)
         {
-            newProduct.Id = Guid.NewGuid();
-
             var res = await _repository.AddProductAsync(newProduct);
 
             return await Task.FromResult(res);

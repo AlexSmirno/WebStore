@@ -31,13 +31,13 @@ namespace WebStoreServer.Features.Products
 
 
         [HttpGet("{ProductName}", Name = "/get_product")]
-        public async Task<ActionResult<List<Product>>> GetProductsByName(string name)
+        public async Task<ActionResult<Product>> GetProductsByName(string ProductName)
         {
-            var result = await _productService.GetProductByNameAsync(name);
+            var result = await _productService.GetProductByNameAsync(ProductName);
 
             if (result.IsSucceeded)
             {
-                return await Task.FromResult(result.Data.ToList());
+                return await Task.FromResult(result.Data.ToList().FirstOrDefault());
             }
 
             if (result.ErrorCode == 404) return NotFound();

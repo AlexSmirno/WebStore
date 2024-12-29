@@ -54,9 +54,4 @@ namespace WebStoreServer
             app.Run();
         }
     }
-
-    public partial class Program
-    {
-
-    }
 }

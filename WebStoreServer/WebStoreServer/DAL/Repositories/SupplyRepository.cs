@@ -21,7 +21,7 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<IEnumerable<Supply>>(supplies));
         }
 
-        public async Task<Result<Supply>> GetSupplyByIdAsync(Guid id)
+        public async Task<Result<Supply>> GetSupplyByIdAsync(int id)
         {
             var supply = await _context.SuppliesTable.FirstOrDefaultAsync(p => p.Id == id);
 
@@ -33,7 +33,24 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<Supply>(supply));
         }
 
-        public async Task<Result<bool>> AddSupplyAsync(Supply newSupply)
+        public async Task<Result<bool>> AddInSupplyAsync(Supply newSupply)
+        {
+            try
+            {
+                var currentSupply = await _context.SuppliesTable.AddAsync(newSupply);
+
+                _context.SaveChanges();
+
+                return await Task.FromResult(new Result<bool>(true));
+            }
+            catch (Exception ex)
+            {
+                //TODO: Think about error message for user
+                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
+            }
+        }
+
+        public async Task<Result<bool>> AddOutSupplyAsync(Supply newSupply)
         {
             try
             {
@@ -50,7 +67,6 @@ namespace WebStoreServer.DAL.Repositories
                 return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
             }
         }
-
 
         public async Task<Result<bool>> UpdateSupplyAsync(Supply newSupply)
         {

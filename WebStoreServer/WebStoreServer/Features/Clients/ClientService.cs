@@ -20,7 +20,7 @@ namespace WebStoreServer.Features.Clients
             return await Task.FromResult(clients);
         }
 
-        public async Task<Result<Client>> GetClientByIdAsync(Guid id)
+        public async Task<Result<Client>> GetClientByIdAsync(int id)
         {
             var clients = await _repository.GetClientByIdAsync(id);
 
@@ -36,8 +36,6 @@ namespace WebStoreServer.Features.Clients
 
         public async Task<Result<bool>> CreateClientAsync(Client newClient)
         {
-            newClient.Id = Guid.NewGuid();
-
             var res = await _repository.AddClientAsync(newClient);
 
             return await Task.FromResult(res);

@@ -5,7 +5,7 @@ namespace WebStoreServer.Models.Products
     public class ProductType
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string? Description { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<IEnumerable<Client>>(clients));
         }
 
-        public async Task<Result<Client>> GetClientByIdAsync(Guid id)
+        public async Task<Result<Client>> GetClientByIdAsync(int id)
         {
             var client = await _context.ClientsTable.FirstOrDefaultAsync(p => p.Id == id);
 

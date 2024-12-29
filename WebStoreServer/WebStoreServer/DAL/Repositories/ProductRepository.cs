@@ -21,7 +21,7 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<IEnumerable<Product>>(products));
         }
 
-        public async Task<Result<Product>> GetProductByIdAsync(Guid id)
+        public async Task<Result<Product>> GetProductByIdAsync(int id)
         {
             var product = await _context.ProductsTable.FirstOrDefaultAsync(p => p.Id == id);
 

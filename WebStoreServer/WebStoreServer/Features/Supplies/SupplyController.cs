@@ -33,7 +33,7 @@ namespace WebStoreServer.Features.Supplies
 
 
         [HttpGet("{SupplyName}", Name = "/get_Supply")]
-        public async Task<ActionResult<Supply>> GetSuppliesByName(Guid id)
+        public async Task<ActionResult<Supply>> GetSuppliesByName(int id)
         {
             var result = await _supplyService.GetSupplyByIdAsync(id);
 
@@ -48,7 +48,7 @@ namespace WebStoreServer.Features.Supplies
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateSupply([FromBody] Supply Supply)
+        public async Task<ActionResult<bool>> CreateSupply([FromBody] SupplyDTO Supply)
         {
             var result = await _supplyService.CreateSupply(Supply);
 
@@ -56,8 +56,6 @@ namespace WebStoreServer.Features.Supplies
             {
                 return await Task.FromResult(result.Data);
             }
-
-            if (result.ErrorCode / 100 == 4) return BadRequest();
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }

@@ -10,6 +10,7 @@ namespace WebStoreServer.DAL
     {
         public StoreContext(DbContextOptions options) : base (options)
         {
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
