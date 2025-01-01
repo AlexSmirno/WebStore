@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using WebStore.Domain;
+using WebStore.Domain.Clients;
+using WebStore.Domain.Orders;
 using WebStoreServer.DAL.Repositories;
-using WebStoreServer.Models;
-using WebStoreServer.Models.Clients;
 
 namespace WebStoreServer.Features.Clients
 {
@@ -15,42 +15,45 @@ namespace WebStoreServer.Features.Clients
 
         public async Task<Result<IEnumerable<Client>>> GetClientsAsync()
         {
-            var clients = await _repository.GetAllSuppliesAsync();
+            var clients = await _repository.GetAllClientsAsync();
 
             return await Task.FromResult(clients);
         }
 
-        public async Task<Result<Client>> GetClientByIdAsync(int id)
+        public async Task<Result<ClientDTO>> GetClientByDTO(ClientDTO client)
         {
-            var clients = await _repository.GetClientByIdAsync(id);
+            var result = await _repository.GetClientsByDTO(client);
 
-            return await Task.FromResult(clients);
+            if (result.IsSucceeded == false)
+            {
+                return await Task.FromResult(new Result<ClientDTO>() 
+                { IsSucceeded = false, ErrorCode = result.ErrorCode, ErrorMessage = result.ErrorMessage});
+            }
+
+            var foundClient = result.Data;
+            var cl = new ClientDTO(foundClient);
+
+            return await Task.FromResult(new Result<ClientDTO>()
+            { IsSucceeded = true, Data = cl});
         }
 
-        public async Task<Result<IEnumerable<Client>>> GetClientByNameAsync(string name)
+        public async Task<Result<bool>> CreateClientAsync(ClientAuthDTO newClient)
         {
-            var clients = await _repository.GetClientsByNameAsync(name);
-
-            return await Task.FromResult(clients);
-        }
-
-        public async Task<Result<bool>> CreateClientAsync(Client newClient)
-        {
-            var res = await _repository.AddClientAsync(newClient);
+            var res = await _repository.AddClientAsync(newClient.ToClient());
 
             return await Task.FromResult(res);
         }
 
-        public async Task<Result<bool>> UpdateClientAsync(Client newClient)
+        public async Task<Result<bool>> UpdateClientAsync(ClientAuthDTO newClient)
         {
-            var res = await _repository.UpdateClientAsync(newClient);
+            var res = await _repository.UpdateClientAsync(newClient.ToClient());
 
             return await Task.FromResult(res);
         }
 
-        public async Task<Result<bool>> DeleteClientAsync(Client newClient)
+        public async Task<Result<bool>> DeleteClientAsync(ClientDTO newClient)
         {
-            var res = await _repository.DeleteClientAsync(newClient);
+            var res = await _repository.DeleteClientAsync(newClient.ToClient());
 
             return await Task.FromResult(res);
         }

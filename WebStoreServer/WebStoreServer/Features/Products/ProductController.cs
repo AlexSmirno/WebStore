@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebStoreServer.Models.Products;
+using WebStore.Domain.Products;
 
 namespace WebStoreServer.Features.Products
 {
@@ -24,23 +24,19 @@ namespace WebStoreServer.Features.Products
                 return await Task.FromResult(result.Data.ToList());
             }
 
-            if (result.ErrorCode == 404) return NotFound();
-
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
 
 
-        [HttpGet("{ProductName}", Name = "/get_product")]
-        public async Task<ActionResult<Product>> GetProductsByName(string ProductName)
+        [HttpPost("find", Name = "/find")]
+        public async Task<ActionResult<List<Product>>> GetProductsByObject([FromBody] Product product)
         {
-            var result = await _productService.GetProductByNameAsync(ProductName);
+            var result = await _productService.GetProductsByObject(product);
 
             if (result.IsSucceeded)
             {
-                return await Task.FromResult(result.Data.ToList().FirstOrDefault());
+                return await Task.FromResult(result.Data.ToList());
             }
-
-            if (result.ErrorCode == 404) return NotFound();
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
@@ -55,8 +51,6 @@ namespace WebStoreServer.Features.Products
                 return await Task.FromResult(result.Data);
             }
 
-            if (result.ErrorCode/100 == 4) return BadRequest();
-
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
 
@@ -70,8 +64,6 @@ namespace WebStoreServer.Features.Products
                 return await Task.FromResult(result.Data);
             }
 
-            if (result.ErrorCode / 100 == 4) return BadRequest();
-
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
 
@@ -84,8 +76,6 @@ namespace WebStoreServer.Features.Products
             {
                 return await Task.FromResult(result.Data);
             }
-
-            if (result.ErrorCode / 100 == 4) return BadRequest();
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }

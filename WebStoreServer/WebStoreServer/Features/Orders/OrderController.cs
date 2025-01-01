@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebStore.Domain.Clients;
+using WebStore.Domain.Orders;
 
-namespace WebStoreServer.Features.Clients
+namespace WebStoreServer.Features.Orders
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private ClientService _clientService;
+        private OrderService _OrderService;
 
-        public ClientController(ClientService clientService)
+        public OrderController(OrderService OrderService)
         {
-            _clientService = clientService;
+            _OrderService = OrderService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Client>>> GetClients()
+        public async Task<ActionResult<List<OrderDTO>>> GetOrders()
         {
-            var result = await _clientService.GetClientsAsync();
+            var result = await _OrderService.GetOrdersAsync();
 
             if (result.IsSucceeded)
             {
@@ -28,23 +28,23 @@ namespace WebStoreServer.Features.Clients
         }
 
 
-        [HttpPost("/find", Name = "/find")]
-        public async Task<ActionResult<ClientDTO>> GetClientsByDTO([FromBody] ClientDTO client)
+        [HttpPost("/find", Name = "find")]
+        public async Task<ActionResult<List<OrderDTO>> GetOrdersByDTO([FromBody] OrderDTO order)
         {
-            var result = await _clientService.GetClientByDTO(client);
+            var result = await _OrderService.GetOrderByDTOAsync(order);
 
             if (result.IsSucceeded)
             {
-                return await Task.FromResult(result.Data));
+                return await Task.FromResult(result.Data);
             }
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateClient([FromBody] ClientAuthDTO client)
+        public async Task<ActionResult<bool>> CreateOrder([FromBody] OrderDTO Order)
         {
-            var result = await _clientService.CreateClientAsync(client);
+            var result = await _OrderService.CreateOrder(Order);
 
             if (result.IsSucceeded)
             {
@@ -55,9 +55,9 @@ namespace WebStoreServer.Features.Clients
         }
 
         [HttpPut]
-        public async Task<ActionResult<bool>> UpdateClient([FromBody] ClientAuthDTO client)
+        public async Task<ActionResult<bool>> UpdateOrder([FromBody] Order Order)
         {
-            var result = await _clientService.UpdateClientAsync(client);
+            var result = await _OrderService.UpdateOrder(Order);
 
             if (result.IsSucceeded)
             {
@@ -68,9 +68,9 @@ namespace WebStoreServer.Features.Clients
         }
 
         [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteClient([FromBody] ClientDTO client)
+        public async Task<ActionResult<bool>> DeleteOrder([FromBody] Order Order)
         {
-            var result = await _clientService.DeleteClientAsync(client);
+            var result = await _OrderService.DeleteOrder(Order);
 
             if (result.IsSucceeded)
             {

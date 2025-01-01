@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebStoreServer.Models;
-using WebStoreServer.Models.Clients;
-using WebStoreServer.Models.Clients;
+using System.Xml.Linq;
+using WebStore.Domain;
+using WebStore.Domain.Clients;
 
 namespace WebStoreServer.DAL.Repositories
 {
@@ -13,35 +13,34 @@ namespace WebStoreServer.DAL.Repositories
             _context = context;
         }
 
-        public async Task<Result<IEnumerable<Client>>> GetAllSuppliesAsync()
+        public async Task<Result<IEnumerable<Client>>> GetAllClientsAsync()
         {
             var clients = _context.ClientsTable;
 
             return await Task.FromResult(new Result<IEnumerable<Client>>(clients));
         }
 
-        public async Task<Result<Client>> GetClientByIdAsync(int id)
+        public async Task<Result<Client>> GetClientsByDTO(ClientDTO client)
         {
-            var client = await _context.ClientsTable.FirstOrDefaultAsync(p => p.Id == id);
+            var clients = _context.ClientsTable.Include(cl => cl.Orders);
+            Client? foundClient = null;
 
-            if (client == null)
+            if (client.Id > 0) 
+                foundClient = await clients.FirstOrDefaultAsync(p => p.Id == client.Id);
+
+            if (foundClient == null && client.Mail != null) 
+                foundClient = await clients.FirstOrDefaultAsync(p => p.Mail == client.Mail);
+
+            if (foundClient == null && client.FullName != null) 
+                foundClient = await clients.FirstOrDefaultAsync(p => p.FullName == client.FullName);
+
+            if (foundClient == null)
             {
-                return await Task.FromResult(new Result<Client>() { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                return await Task.FromResult(new Result<Client>() 
+                { IsSucceeded = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
             }
 
-            return await Task.FromResult(new Result<Client>(client));
-        }
-
-        public async Task<Result<IEnumerable<Client>>> GetClientsByNameAsync(string name)
-        {
-            var client = _context.ClientsTable.Where(p => p.CompamyName == name);
-
-            if (client == null || client.Count() == 0)
-            {
-                return await Task.FromResult(new Result<IEnumerable<Client>>() { IsSucceeded = false, ErrorMessage = "Таких компаний нет", ErrorCode = 404 });
-            }
-
-            return await Task.FromResult(new Result<IEnumerable<Client>>(client));
+            return await Task.FromResult(new Result<Client>(foundClient));
         }
 
         public async Task<Result<bool>> AddClientAsync(Client newClient)
@@ -58,7 +57,8 @@ namespace WebStoreServer.DAL.Repositories
             {
                 Console.WriteLine(ex.Message);
                 //TODO: Think about error message for user
-                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
+                return await Task.FromResult(new Result<bool>() 
+                { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
             }
         }
 
@@ -71,20 +71,22 @@ namespace WebStoreServer.DAL.Repositories
 
                 if (currentClient == null)
                 {
-                    return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                    return await Task.FromResult(new Result<bool>() 
+                    { IsSucceeded = false, Data = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
                 }
 
-                currentClient.CompamyName = newClient.CompamyName;
-                currentClient.Adress = newClient.Adress;
-                currentClient.PhoneNumber = newClient.PhoneNumber;
-                currentClient.Negoriator = newClient.Negoriator;
+                currentClient.Phone = newClient.Phone;
+                currentClient.FullName = newClient.FullName;
+                currentClient.Password = newClient.Password;
+                currentClient.Mail = newClient.Mail;
 
                 _context.SaveChanges();
                 return await Task.FromResult(new Result<bool>(true));
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
+                return await Task.FromResult(new Result<bool>() 
+                { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
             }
         }
 
@@ -94,7 +96,8 @@ namespace WebStoreServer.DAL.Repositories
 
             if (count == 0)
             {
-                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                return await Task.FromResult(new Result<bool>() 
+                { IsSucceeded = false, Data = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
             }
 
             _context.SaveChanges();

@@ -1,5 +1,5 @@
 ﻿
-namespace WebStoreServer.Models
+namespace WebStore.Domain
 {
     // Класс для описания результатов выполнения функции
     public class Result<T>

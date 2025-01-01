@@ -1,8 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
-using WebStoreServer.Models;
-using WebStoreServer.Models.Products;
+﻿using Microsoft.EntityFrameworkCore;
+using WebStore.Domain;
+using WebStore.Domain.Clients;
+using WebStore.Domain.Products;
 
 namespace WebStoreServer.DAL.Repositories
 {
@@ -27,22 +26,47 @@ namespace WebStoreServer.DAL.Repositories
 
             if (product == null)
             {
-                return await Task.FromResult(new Result<Product>() { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                return await Task.FromResult(new Result<Product>() 
+                { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
             }
 
             return await Task.FromResult(new Result<Product>(product));
         }
 
-        public async Task<Result<IEnumerable<Product>>> GetProductsByNameAsync(string name)
+        public async Task<Result<List<Product>>> GetProductByIdsAsync(List<int> ids)
         {
-            var product = _context.ProductsTable.Where(p => p.ProductName == name);
+            var product = await _context.ProductsTable.Where(p => ids.Contains(p.Id)).ToListAsync();
 
-            if (product == null || product.Count() == 0)
+            if (product == null)
             {
-                return await Task.FromResult(new Result<IEnumerable<Product>> () { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                return await Task.FromResult(new Result<List<Product>>() 
+                { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
             }
 
-            return await Task.FromResult(new Result<IEnumerable<Product>>(product));
+            return await Task.FromResult(new Result<List<Product>>(product));
+        }
+
+        public async Task<Result<IEnumerable<Product>>> GetProductsByObject(Product product)
+        {
+            var products = _context.ProductsTable;
+
+            IEnumerable<Product> foundProducts = null;
+
+            if (product.Id > 0)
+                foundProducts = products.Where(p => p.Id == product.Id);
+
+            if (product.ProductName != null && product.ProductName != "")
+                foundProducts = products.Where(p => p.ProductName == product.ProductName);
+
+            foundProducts = products.Where(p => p.Count > 0);
+
+            if (foundProducts == null || foundProducts.Count() == 0)
+            {
+                return await Task.FromResult(new Result<IEnumerable<Product>> () 
+                { IsSucceeded = false, ErrorMessage = "There are no these elements", ErrorCode = 404 });
+            }
+
+            return await Task.FromResult(new Result<IEnumerable<Product>>(foundProducts));
         }
 
         public async Task<Result<bool>> AddProductAsync(Product newProduct)
@@ -59,7 +83,8 @@ namespace WebStoreServer.DAL.Repositories
             {
                 Console.WriteLine(ex.Message);
                 //TODO: Think about error message for user
-                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
+                return await Task.FromResult(new Result<bool>()
+                { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
             }
         }
 
@@ -72,15 +97,14 @@ namespace WebStoreServer.DAL.Repositories
 
                 if (currentProduct == null)
                 {
-                    return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                    return await Task.FromResult(new Result<bool>() 
+                    { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
                 }
 
                 currentProduct.ProductName = newProduct.ProductName;
                 currentProduct.Price = newProduct.Price;
                 currentProduct.Count = newProduct.Count;
                 currentProduct.Description = newProduct.Description;
-                currentProduct.DevisionId = newProduct.DevisionId;
-                currentProduct.ProductTypeId = newProduct.ProductTypeId;
                 currentProduct.Size = newProduct.Size;
 
                 _context.SaveChanges();
@@ -88,7 +112,8 @@ namespace WebStoreServer.DAL.Repositories
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
+                return await Task.FromResult(new Result<bool>() 
+                { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
             }
         }
 
@@ -98,7 +123,8 @@ namespace WebStoreServer.DAL.Repositories
 
             if (count == 0)
             {
-                return await Task.FromResult(new Result<bool>() { IsSucceeded = false, Data = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
+                return await Task.FromResult(new Result<bool>() 
+                { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
             }
 
             _context.SaveChanges();

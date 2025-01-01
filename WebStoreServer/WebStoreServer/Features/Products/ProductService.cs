@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
+﻿using WebStore.Domain;
+using WebStore.Domain.Products;
 using WebStoreServer.DAL.Repositories;
-using WebStoreServer.Models;
-using WebStoreServer.Models.Products;
 
 namespace WebStoreServer.Features.Products
 {
@@ -29,9 +26,9 @@ namespace WebStoreServer.Features.Products
             return await Task.FromResult(products);
         }
 
-        public async Task<Result<IEnumerable<Product>>> GetProductByNameAsync(string name)
+        public async Task<Result<IEnumerable<Product>>> GetProductsByObject(Product product)
         {
-            var products = await _repository.GetProductsByNameAsync(name);
+            var products = await _repository.GetProductsByObject(product);
 
             return await Task.FromResult(products);
         }
