@@ -9,7 +9,23 @@ namespace WebStore.Domain.Orders
         public string? Time { get; set; }
         public string? OrderType { get; set; }
         public int ClientId { get; set; }
-        public List<Product> Products { get; set; }
+        public List<Product>? Products { get; set; }
+
+        public OrderDTO() { }
+
+        public OrderDTO(Order order)
+        {
+            Id = order.Id;
+            Date = order.Date;
+            Time = order.Time;
+            OrderType = order.OrderType?.Description;
+            Products = new List<Product>();
+
+            foreach (var product in order.ProductOrderInfos)
+            {
+                Products.Add(new Product() { Id = product.ProductId, Count = product.Count });
+            }
+        }
 
         public Order ToOrder()
         {

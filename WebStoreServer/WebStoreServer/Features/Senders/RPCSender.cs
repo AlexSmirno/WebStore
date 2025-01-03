@@ -1,6 +1,6 @@
 ﻿using Grpc.Net.Client;
 using WebStore.Domain;
-using WebStore.Domain.Supplies;
+using WebStore.Domain.Orders;
 
 namespace WebStoreServer.Features.Senders
 {
@@ -32,7 +32,7 @@ namespace WebStoreServer.Features.Senders
 
                 var client = new Greeter.GreeterClient(channel);
 
-                var reply = await client.SayHelloAsync(new HelloRequest { Name = message });
+                var reply = await client.SayHelloAsync(new HelloRequest { Name = "" });
             }
             catch (Exception)
             {

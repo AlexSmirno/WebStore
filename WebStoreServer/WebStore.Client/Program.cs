@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using WebStoreServer.Models.Products;
+using WebStore.Domain.Products;
 
 namespace WebStore.Client
 {
@@ -10,11 +10,13 @@ namespace WebStore.Client
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("https://localhost:7151");
 
-            string name = "string";
-            var product = client.GetFromJsonAsync<Product>($"/api/Product/{name}").Result;
+            var cl = new Domain.Clients.Client();
+            cl.Id = 1;
+            cl.FullName = "Семен";
 
+            var res = client.PutAsJsonAsync<Domain.Clients.Client>($"/api/Client", cl);
 
-            Console.WriteLine(product.Id + " " + product.Count);
+            Console.WriteLine(res.Result);
 
             Console.ReadKey();
         }

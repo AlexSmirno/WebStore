@@ -9,8 +9,9 @@ namespace WebStore.Domain.Clients
         public int Id { get; set; }
         public string? Mail { get; set; }
         public string? Phone { get; set; }
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
+        public ClientAuthDTO() { }
         public ClientAuthDTO(Client client)
         {
             Id = client.Id;

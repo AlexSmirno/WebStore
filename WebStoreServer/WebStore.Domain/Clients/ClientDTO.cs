@@ -10,8 +10,10 @@ namespace WebStore.Domain.Clients
         public int Id { get; set; }
         public string? Mail { get; set; }
         public string? FullName { get; set; }
-        public List<OrderDTO> Orders { get; set; }
+        public List<OrderDTO>? Orders { get; set; }
 
+
+        public ClientDTO() { }
 
         public ClientDTO(Client client)
         {

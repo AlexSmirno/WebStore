@@ -10,8 +10,8 @@ namespace WebStore.Domain.Clients
         public string? Mail { get; set; }
         public string? FullName { get; set; }
         public string? Phone { get; set; }
-        public string Password { get; set; }
-        public List<Order> Orders { get; set; }
+        public string? Password { get; set; }
+        public List<Order>? Orders { get; set; }
 
     }
 }

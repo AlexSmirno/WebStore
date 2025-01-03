@@ -15,14 +15,14 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<IEnumerable<Client>>> GetAllClientsAsync()
         {
-            var clients = _context.ClientsTable;
+            var clients = _context.Clients;
 
             return await Task.FromResult(new Result<IEnumerable<Client>>(clients));
         }
 
         public async Task<Result<Client>> GetClientsByDTO(ClientDTO client)
         {
-            var clients = _context.ClientsTable.Include(cl => cl.Orders);
+            var clients = _context.Clients.Include(cl => cl.Orders);
             Client? foundClient = null;
 
             if (client.Id > 0) 
@@ -47,7 +47,7 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentClient = await _context.ClientsTable.AddAsync(newClient);
+                var currentClient = await _context.Clients.AddAsync(newClient);
 
                 _context.SaveChanges();
 
@@ -67,18 +67,27 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentClient = await _context.ClientsTable.FindAsync(newClient.Id);
+                string name = _context.Database.GetDbConnection().Database;
+                var currentClient = await _context.Clients.FindAsync(newClient.Id);
 
                 if (currentClient == null)
                 {
                     return await Task.FromResult(new Result<bool>() 
                     { IsSucceeded = false, Data = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
                 }
+                if (newClient.Phone != null)
+                    currentClient.Phone = newClient.Phone;
 
-                currentClient.Phone = newClient.Phone;
-                currentClient.FullName = newClient.FullName;
-                currentClient.Password = newClient.Password;
-                currentClient.Mail = newClient.Mail;
+                if (newClient.FullName != null)
+                    currentClient.FullName = newClient.FullName;
+
+                if (newClient.Password != null)
+                    currentClient.Password = newClient.Password;
+
+                if (newClient.Mail != null)
+                    currentClient.Mail = newClient.Mail;
+
+                _context.Clients.Update(currentClient);
 
                 _context.SaveChanges();
                 return await Task.FromResult(new Result<bool>(true));
@@ -92,7 +101,7 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<bool>> DeleteClientAsync(Client client)
         {
-            int count = await _context.ClientsTable.Where(p => p.Id == client.Id).ExecuteDeleteAsync();
+            int count = await _context.Clients.Where(p => p.Id == client.Id).ExecuteDeleteAsync();
 
             if (count == 0)
             {

@@ -44,9 +44,9 @@ namespace WebStoreServer.Features.Clients
             return await Task.FromResult(res);
         }
 
-        public async Task<Result<bool>> UpdateClientAsync(ClientAuthDTO newClient)
+        public async Task<Result<bool>> UpdateClientAsync(Client newClient)
         {
-            var res = await _repository.UpdateClientAsync(newClient.ToClient());
+            var res = await _repository.UpdateClientAsync(newClient);
 
             return await Task.FromResult(res);
         }

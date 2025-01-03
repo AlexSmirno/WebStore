@@ -28,14 +28,14 @@ namespace WebStoreServer.Features.Clients
         }
 
 
-        [HttpPost("/find", Name = "/find")]
+        [HttpPost("/api/Clients", Name = "Clients")]
         public async Task<ActionResult<ClientDTO>> GetClientsByDTO([FromBody] ClientDTO client)
         {
             var result = await _clientService.GetClientByDTO(client);
 
             if (result.IsSucceeded)
             {
-                return await Task.FromResult(result.Data));
+                return await Task.FromResult(result.Data);
             }
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);
@@ -55,7 +55,7 @@ namespace WebStoreServer.Features.Clients
         }
 
         [HttpPut]
-        public async Task<ActionResult<bool>> UpdateClient([FromBody] ClientAuthDTO client)
+        public async Task<ActionResult<bool>> UpdateClient([FromBody] Client client)
         {
             var result = await _clientService.UpdateClientAsync(client);
 

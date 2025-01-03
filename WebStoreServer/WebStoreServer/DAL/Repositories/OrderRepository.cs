@@ -16,14 +16,14 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<IEnumerable<Order>>> GetAllOrdersAsync()
         {
-            var supplies = _context.SuppliesTable;
+            var orders = _context.Orders;
 
-            return await Task.FromResult(new Result<IEnumerable<Order>>(supplies));
+            return await Task.FromResult(new Result<IEnumerable<Order>>(orders));
         }
 
         public async Task<Result<IEnumerable<Order>>> GetOrdersByDTO(OrderDTO order)
         {
-            var orders = _context.SuppliesTable.Include(o => o.OrderType);
+            var orders = _context.Orders.Include(o => o.OrderType);
 
             IEnumerable<Order> foundOrders = orders;
             if (order.Id > 0) 
@@ -51,7 +51,7 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentOrder = await _context.SuppliesTable.AddAsync(newOrder);
+                var currentOrder = await _context.Orders.AddAsync(newOrder);
 
                 _context.SaveChanges();
 
@@ -70,7 +70,7 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentOrder = await _context.SuppliesTable.FindAsync(newOrder.Id);
+                var currentOrder = await _context.Orders.FindAsync(newOrder.Id);
 
                 if (currentOrder == null)
                 {
@@ -78,10 +78,20 @@ namespace WebStoreServer.DAL.Repositories
                     { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
                 }
 
-                currentOrder.ClientId = newOrder.ClientId;
-                currentOrder.Date = newOrder.Date;
-                currentOrder.Time = newOrder.Time;
-                currentOrder.OrderType = newOrder.OrderType;
+                if (newOrder.ClientId > 0)
+                    currentOrder.ClientId = newOrder.ClientId;
+
+                if (newOrder.Date != null)
+                    currentOrder.Date = newOrder.Date;
+
+                if (newOrder.Time != null)
+                    currentOrder.Time = newOrder.Time;
+
+                if (newOrder.OrderTypeId > 0)
+                    currentOrder.OrderTypeId = newOrder.OrderTypeId;
+
+
+                _context.Orders.Update(currentOrder);
 
                 _context.SaveChanges();
 
@@ -96,7 +106,7 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<bool>> DeleteOrderAsync(Order Order)
         {
-            int count = await _context.SuppliesTable.Where(p => p.Id == Order.Id).ExecuteDeleteAsync();
+            int count = await _context.Orders.Where(p => p.Id == Order.Id).ExecuteDeleteAsync();
 
             if (count == 0)
             {

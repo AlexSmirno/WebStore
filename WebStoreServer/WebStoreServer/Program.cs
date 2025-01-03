@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using WebStoreServer.DAL;
 using WebStoreServer.DAL.Repositories;
 using WebStoreServer.Features.Clients;
+using WebStoreServer.Features.Orders;
 using WebStoreServer.Features.Products;
 using WebStoreServer.Features.Senders;
-using WebStoreServer.Features.Supplies;
 
 namespace WebStoreServer
 {
@@ -55,6 +55,7 @@ namespace WebStoreServer
             app.MapControllers();
 
             app.Run();
+
         }
     }
 }

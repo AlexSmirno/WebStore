@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
 
 namespace WebStoreServer.DAL
 {
-    public class StoreContext : DbContext
+    public class StoreContext : DbContext, IContext
     {
         public StoreContext(DbContextOptions options) : base (options)
         {
+            string name = Database.GetDbConnection().Database;
             //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
@@ -38,9 +39,9 @@ namespace WebStoreServer.DAL
         }
 
 
-        public DbSet<Product> ProductsTable { get; set; }
-        public DbSet<Client> ClientsTable { get; set; }
-        public DbSet<Order> SuppliesTable { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public DbSet<ProductOrderInfo> ProductOrderInfos { get; set; }
         public DbSet<OrderType> OrderTypes { get; set; }
     }

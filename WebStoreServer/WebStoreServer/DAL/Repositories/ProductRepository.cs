@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using WebStore.Domain;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Products;
@@ -15,14 +16,14 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<IEnumerable<Product>>> GetAllProductsAsync()
         {
-            var products = _context.ProductsTable;
+            var products = _context.Products;
 
             return await Task.FromResult(new Result<IEnumerable<Product>>(products));
         }
 
         public async Task<Result<Product>> GetProductByIdAsync(int id)
         {
-            var product = await _context.ProductsTable.FirstOrDefaultAsync(p => p.Id == id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -35,7 +36,7 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<List<Product>>> GetProductByIdsAsync(List<int> ids)
         {
-            var product = await _context.ProductsTable.Where(p => ids.Contains(p.Id)).ToListAsync();
+            var product = await _context.Products.Where(p => ids.Contains(p.Id)).ToListAsync();
 
             if (product == null)
             {
@@ -48,7 +49,7 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<IEnumerable<Product>>> GetProductsByObject(Product product)
         {
-            var products = _context.ProductsTable;
+            var products = _context.Products;
 
             IEnumerable<Product> foundProducts = null;
 
@@ -56,9 +57,8 @@ namespace WebStoreServer.DAL.Repositories
                 foundProducts = products.Where(p => p.Id == product.Id);
 
             if (product.ProductName != null && product.ProductName != "")
-                foundProducts = products.Where(p => p.ProductName == product.ProductName);
+                foundProducts = products.Where(p => EF.Functions.FuzzyStringMatchDifference(p.ProductName, product.ProductName) > 0);
 
-            foundProducts = products.Where(p => p.Count > 0);
 
             if (foundProducts == null || foundProducts.Count() == 0)
             {
@@ -73,7 +73,7 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentProduct = await _context.ProductsTable.AddAsync(newProduct);
+                var currentProduct = await _context.Products.AddAsync(newProduct);
 
                 _context.SaveChanges();
 
@@ -93,7 +93,7 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentProduct = await _context.ProductsTable.FindAsync(newProduct.Id);
+                var currentProduct = await _context.Products.FindAsync(newProduct.Id);
 
                 if (currentProduct == null)
                 {
@@ -101,13 +101,24 @@ namespace WebStoreServer.DAL.Repositories
                     { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
                 }
 
-                currentProduct.ProductName = newProduct.ProductName;
-                currentProduct.Price = newProduct.Price;
-                currentProduct.Count = newProduct.Count;
-                currentProduct.Description = newProduct.Description;
-                currentProduct.Size = newProduct.Size;
+                if (newProduct.ProductName != null)
+                    currentProduct.ProductName = newProduct.ProductName;
 
+                if (newProduct.Price > 0)
+                    currentProduct.Price = newProduct.Price;
+
+                if (newProduct.Count > 0)
+                    currentProduct.Count = newProduct.Count;
+
+                if (newProduct.Size > 0)
+                    currentProduct.Size = newProduct.Size;
+
+                if (newProduct.Description != null)
+                    currentProduct.Description = newProduct.Description;
+
+                _context.Products.Update(currentProduct);
                 _context.SaveChanges();
+
                 return await Task.FromResult(new Result<bool>(true));
             }
             catch (Exception ex)
@@ -119,7 +130,7 @@ namespace WebStoreServer.DAL.Repositories
 
         public async Task<Result<bool>> DeleteProductAsync(Product product)
         {
-            int count = await _context.ProductsTable.Where(p => p.Id == product.Id).ExecuteDeleteAsync();
+            int count = await _context.Products.Where(p => p.Id == product.Id).ExecuteDeleteAsync();
 
             if (count == 0)
             {

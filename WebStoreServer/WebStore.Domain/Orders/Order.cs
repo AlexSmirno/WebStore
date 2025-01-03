@@ -12,6 +12,6 @@ namespace WebStore.Domain.Orders
         public OrderType? OrderType { get; set; }
         public int ClientId { get; set; }
         public Client? Client { get; set; }
-        public List<ProductOrderInfo> ProductOrderInfos { get; set; }
+        public List<ProductOrderInfo>? ProductOrderInfos { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace WebStoreServer.Features.Orders
 {
     public class OrderService
     {
-        private OrderRepository _OrderRepository;
+        private OrderRepository _orderRepository;
         private ProductRepository _productRepository;
         private ISender _sender;
         public OrderService(
@@ -16,135 +16,166 @@ namespace WebStoreServer.Features.Orders
             ProductRepository productRepository, 
             ISender sender)
         {
-            _OrderRepository = OrderRepository;
+            _orderRepository = OrderRepository;
             _productRepository = productRepository;
             _sender = sender;
         }
 
-        public async Task<Result<IEnumerable<Order>>> GetOrdersAsync()
+        public async Task<Result<IEnumerable<OrderDTO>>> GetOrdersAsync()
         {
-            var supplies = await _OrderRepository.GetAllOrdersAsync();
+            var ordersResult = await _orderRepository.GetAllOrdersAsync();
 
-            return await Task.FromResult(supplies);
+            if (ordersResult.IsSucceeded == false)
+            {
+                return new Result<IEnumerable<OrderDTO>>
+                {
+                    IsSucceeded = false,
+                    ErrorCode = ordersResult.ErrorCode,
+                    ErrorMessage = ordersResult.ErrorMessage
+                };
+            }
+
+            var newResult = new Result<IEnumerable<OrderDTO>>();
+            var list = new List<OrderDTO>();
+
+            foreach (var order in ordersResult.Data) 
+                list.Add(new OrderDTO(order));
+
+            newResult.Data = list;
+            
+            return await Task.FromResult(newResult);
         }
 
-        public async Task<Result<Order>> GetOrderByDTOAsync(OrderDTO order)
+        public async Task<Result<IEnumerable<OrderDTO>>> GetOrderByDTOAsync(OrderDTO order)
         {
-            var supplies = await _OrderRepository.GetOrdersByDTO(order.Id);
+            var result = await _orderRepository.GetOrdersByDTO(order);
 
-            return await Task.FromResult(supplies);
+            if (result.IsSucceeded == false)
+            {
+                return await Task.FromResult(new Result<IEnumerable<OrderDTO>>()
+                {
+                    IsSucceeded = false,
+                    ErrorCode = result.ErrorCode,
+                    ErrorMessage = result.ErrorMessage
+                });
+            }
+
+            List<OrderDTO> orders = new List<OrderDTO>();
+
+            foreach (var item in result.Data)
+            {
+                orders.Add(new OrderDTO(item));
+            }
+
+            return await Task.FromResult(new Result<IEnumerable<OrderDTO>>(orders));
         }
 
         public async Task<Result<bool>> CreateOrder(OrderDTO newOrder)
         {
-            var productResult = await _productRepository.GetProductByIdsAsync(newOrder.Products.Select(p => p.Id).ToList());
-            if (productResult.IsSucceeded == false)
+            var productResult = await _productRepository
+                .GetProductByIdsAsync(newOrder.Products.Select(p => p.Id)
+                .ToList());
+
+            if (productResult.IsSucceeded == false || productResult.Data.Count != newOrder.Products.Count)
             {
                 return await Task.FromResult(new Result<bool>()
                 {
                     IsSucceeded = false,
-                    ErrorCode = productResult.ErrorCode,
-                    ErrorMessage = productResult.ErrorMessage,
+                    ErrorCode = 404,
+                    ErrorMessage = "There are no these products",
                     Data = false
-                }
-                );
+                });
             }
 
-            var Order = newOrder.ToOrder();
-            Order.Product = productResult.Data;
+            var order = newOrder.ToOrder();
 
-            if (newOrder.OrderType == "in")
+            foreach (var product in productResult.Data)
             {
-                return await CreateInOrder(Order);
+                order.ProductOrderInfos.Find(poi => poi.ProductId == product.Id).Product = product;
             }
 
-            if (newOrder.OrderType == "out")
+            if (newOrder.OrderType == "Import")
             {
-                return await CreateOutOrder(Order);
+                return await CreateInOrder(order);
+            }
+
+            if (newOrder.OrderType == "Export")
+            {
+                return await CreateOutOrder(order);
             }
 
             return new Result<bool> { 
                 Data = false,
                 ErrorCode = 404, 
-                ErrorMessage = "Несущесвтующий тип поставки" + newOrder.OrderType, 
+                ErrorMessage = "There is no this order type: " + newOrder.OrderType, 
                 IsSucceeded = false 
             };
         }
 
         //Добавление продуктов
-        private async Task<Result<bool>> CreateInOrder(Order Order)
+        private async Task<Result<bool>> CreateInOrder(Order order)
         {
-            if (Order.Product == null)
+            if (order.ProductOrderInfos == null)
             {
                 return await Task.FromResult(new Result<bool>()
                     {
                         IsSucceeded = false,
                         ErrorCode = 404,
-                        ErrorMessage = "Неизвестный продукт",
+                        ErrorMessage = "Unknown products",
                         Data = false
                     }
                 );
             }
 
-            await _sender.Send("Do it!");
+            //Набудующее
+            //await _sender.Send("Do it!");
 
-            Order.Product.Count += Order.Count;
+            foreach (var item in order.ProductOrderInfos)
+            {
+                item.Product.Count += item.Count;
+            }
 
-            var res = await _OrderRepository.AddInOrderAsync(Order);
+            var res = await _orderRepository.AddOrderAsync(order);
 
             return await Task.FromResult(res);
         }
 
         //Удаление продуктов
-        private async Task<Result<bool>> CreateOutOrder(Order Order)
+        private async Task<Result<bool>> CreateOutOrder(Order order)
         {
-            if (Order.Product == null)
+            if (order.ProductOrderInfos == null)
             {
                 return await Task.FromResult(new Result<bool>()
-                    {
-                        IsSucceeded = false,
-                        ErrorCode = 400,
-                        ErrorMessage = "Неизвестный продукт",
+                {
+                    IsSucceeded = false,
+                    ErrorCode = 404,
+                    ErrorMessage = "Unknown products",
                     Data = false
-                    }
-                );
+                });
             }
 
-            if (Order.Product.Count < Order.Count)
+            //Набудующее
+            //await _sender.Send("Do it!");
+
+            foreach (var item in order.ProductOrderInfos)
             {
-                return await Task.FromResult(new Result<bool>()
-                    {
-                        IsSucceeded = false,
-                        ErrorCode = 400,
-                        ErrorMessage = "Недостаток продкта" + Order.Product.Id,
-                        Data = false
-                    }
-                );
+                item.Product.Count += item.Count;
             }
 
-            Order.Product.Count -= Order.Count;
-
-            var res = await _OrderRepository.AddInOrderAsync(Order);
+            var res = await _orderRepository.AddOrderAsync(order);
 
             return await Task.FromResult(res);
         }
-
-        private void GetProductId()
-        {
-
-        }
-
-
         public async Task<Result<bool>> UpdateOrder(Order newOrder)
         {
-            var res = await _OrderRepository.UpdateOrderAsync(newOrder);
+            var res = await _orderRepository.UpdateOrderAsync(newOrder);
 
             return await Task.FromResult(res);
         }
 
         public async Task<Result<bool>> DeleteOrder(Order newOrder)
         {
-            var res = await _OrderRepository.DeleteOrderAsync(newOrder);
+            var res = await _orderRepository.DeleteOrderAsync(newOrder);
 
             return await Task.FromResult(res);
         }

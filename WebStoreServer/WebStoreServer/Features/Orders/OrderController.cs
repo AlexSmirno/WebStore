@@ -28,14 +28,14 @@ namespace WebStoreServer.Features.Orders
         }
 
 
-        [HttpPost("/find", Name = "find")]
-        public async Task<ActionResult<List<OrderDTO>> GetOrdersByDTO([FromBody] OrderDTO order)
+        [HttpPost("/api/Orders", Name = "Orders")]
+        public async Task<ActionResult<List<OrderDTO>>> GetOrdersByDTO([FromBody] OrderDTO order)
         {
             var result = await _OrderService.GetOrderByDTOAsync(order);
 
             if (result.IsSucceeded)
             {
-                return await Task.FromResult(result.Data);
+                return await Task.FromResult(result.Data.ToList());
             }
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);

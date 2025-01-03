@@ -28,7 +28,7 @@ namespace WebStoreServer.Features.Products
         }
 
 
-        [HttpPost("find", Name = "/find")]
+        [HttpPost("/api/Products", Name = "Products")]
         public async Task<ActionResult<List<Product>>> GetProductsByObject([FromBody] Product product)
         {
             var result = await _productService.GetProductsByObject(product);
