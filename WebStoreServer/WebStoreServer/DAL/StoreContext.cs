@@ -6,7 +6,7 @@ using WebStore.Domain.Products;
 
 namespace WebStoreServer.DAL
 {
-    public class StoreContext : DbContext, IContext
+    public class StoreContext : DbContext
     {
         public StoreContext(DbContextOptions options) : base (options)
         {

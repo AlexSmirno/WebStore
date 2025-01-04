@@ -14,6 +14,13 @@ namespace WebStoreServer.DAL.Repositories
             _context = context;
         }
 
+        public async Task<Result<IEnumerable<OrderType>>> GetOrderTypes()
+        {
+            var types = _context.OrderTypes;
+
+            return await Task.FromResult(new Result<IEnumerable<OrderType>>(types));
+        }
+
         public async Task<Result<IEnumerable<Order>>> GetAllOrdersAsync()
         {
             var orders = _context.Orders;
@@ -51,9 +58,15 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                var currentOrder = await _context.Orders.AddAsync(newOrder);
+                /*
+                foreach (var orderInfo in newOrder.ProductOrderInfos)
+                {
+                    await _context.ProductOrderInfos.AddAsync(orderInfo);
+                }
+                */
 
-                _context.SaveChanges();
+                var res = await _context.Orders.AddAsync(newOrder);
+                await _context.SaveChangesAsync();
 
                 return await Task.FromResult(new Result<bool>(true));
             }

@@ -32,7 +32,9 @@ namespace WebStoreServer
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {
-                options.UseNpgsql("Host=localhost;Port=5432;Database=store;Username=postgres;Password=admin");
+                string str = builder.Configuration["Database:ConnectionString"];
+                Console.WriteLine(str);
+                options.UseNpgsql(str);
             });
 
             builder.Services.AddEndpointsApiExplorer();

@@ -19,11 +19,22 @@ namespace Tests
         }
 
         [Fact]
+        public async Task GetClients()
+        {
+            var res = await _client.GetFromJsonAsync<List<Client>>($"/api/Client");
+
+            Assert.True(res != null, "null");
+
+            var db = _services.GetRequiredService<StoreContext>();
+            Assert.True(res.Count == db.Clients.Count(), res.Count.ToString());
+        }
+
+        [Fact]
         public async Task ChangeClientInfo()
         {
             var client = new Client();
             client.Id = 1;
-            client.FullName = "Семен 2";
+            client.FullName = "Семен Семеныч";
 
             var res = await _client.PutAsJsonAsync<Client>($"/api/Client", client);
 
@@ -34,10 +45,21 @@ namespace Tests
 
             var db = _services.GetRequiredService<StoreContext>();
 
-            string name = db.Database.GetDbConnection().Database;
-
             var dbClient = await db.Clients.FirstOrDefaultAsync(cl => cl.Id == client.Id);
             Assert.True(dbClient.FullName == client.FullName, dbClient.FullName);
+        }
+
+        [Fact]
+        public async Task ChangeWrongClientInfo()
+        {
+            var client = new Client();
+            client.Id = 5;
+            client.FullName = "Семен Семеныч";
+
+            var res = await _client.PutAsJsonAsync<Client>($"/api/Client", client);
+
+            Assert.True(res.StatusCode == HttpStatusCode.NotFound,
+                res.StatusCode.ToString());
         }
     }
 }

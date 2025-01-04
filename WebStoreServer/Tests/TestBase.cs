@@ -1,13 +1,13 @@
-﻿
-
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
-using WebStoreServer;
+
 using WebStoreServer.DAL;
+using WebStoreServer;
 
 namespace Tests
 {
@@ -43,6 +43,8 @@ namespace Tests
             var context = _services.GetRequiredService<StoreContext>();
             await context.Database.EnsureDeletedAsync();
             await context.Database.EnsureCreatedAsync();
+
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         private async Task SeedDataAsync()

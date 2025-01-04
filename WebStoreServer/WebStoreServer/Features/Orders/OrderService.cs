@@ -11,6 +11,8 @@ namespace WebStoreServer.Features.Orders
         private OrderRepository _orderRepository;
         private ProductRepository _productRepository;
         private ISender _sender;
+
+        private List<OrderType> orderTypes;
         public OrderService(
             OrderRepository OrderRepository, 
             ProductRepository productRepository, 
@@ -19,6 +21,8 @@ namespace WebStoreServer.Features.Orders
             _orderRepository = OrderRepository;
             _productRepository = productRepository;
             _sender = sender;
+
+            orderTypes = _orderRepository.GetOrderTypes().Result.Data.ToList();
         }
 
         public async Task<Result<IEnumerable<OrderDTO>>> GetOrdersAsync()
@@ -94,13 +98,15 @@ namespace WebStoreServer.Features.Orders
                 order.ProductOrderInfos.Find(poi => poi.ProductId == product.Id).Product = product;
             }
 
-            if (newOrder.OrderType == "Import")
+            if (newOrder.OrderType == orderTypes[0].Description)
             {
+                order.OrderTypeId = orderTypes[0].Id;
                 return await CreateInOrder(order);
             }
 
-            if (newOrder.OrderType == "Export")
+            if (newOrder.OrderType == orderTypes[1].Description)
             {
+                order.OrderTypeId = orderTypes[1].Id;
                 return await CreateOutOrder(order);
             }
 

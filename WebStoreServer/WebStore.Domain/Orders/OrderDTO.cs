@@ -44,7 +44,8 @@ namespace WebStore.Domain.Orders
                 {
                     ProductId = product.Id,
                     Count = product.Count,
-                    OrderId = order.Id
+                    OrderId = order.Id,
+                    Order = order
                 });
             }
 
