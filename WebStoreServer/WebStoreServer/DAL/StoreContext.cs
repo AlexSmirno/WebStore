@@ -8,7 +8,7 @@ namespace WebStoreServer.DAL
 {
     public class StoreContext : DbContext
     {
-        public StoreContext(DbContextOptions options) : base (options)
+        public StoreContext(DbContextOptions options) : base(options)
         {
             string name = Database.GetDbConnection().Database;
             //Database.EnsureDeleted();
@@ -21,10 +21,10 @@ namespace WebStoreServer.DAL
             modelBuilder.Entity<Client>().HasKey(nameof(Client.Id));
             modelBuilder.Entity<Order>().HasKey(nameof(Order.Id));
             modelBuilder.Entity<OrderType>().HasKey(nameof(OrderType.Id));
+            modelBuilder.Entity<OrderStatus>().HasKey(nameof(OrderStatus.Id));
             modelBuilder.Entity<ProductOrderInfo>().HasKey(
-                    nameof(ProductOrderInfo.ProductId), 
-                    nameof(ProductOrderInfo.OrderId)
-                );
+                    nameof(ProductOrderInfo.ProductId),
+                    nameof(ProductOrderInfo.OrderId));
 
             modelBuilder.Entity<Client>().HasMany(nameof(Client.Orders));
             modelBuilder.Entity<Order>().HasOne(nameof(Order.Client));
@@ -35,6 +35,7 @@ namespace WebStoreServer.DAL
             modelBuilder.Entity<ProductOrderInfo>().HasOne(nameof(ProductOrderInfo.Product));
 
             modelBuilder.Entity<OrderType>().HasMany(nameof(OrderType.Orders));
+            modelBuilder.Entity<OrderStatus>().HasMany(nameof(OrderType.Orders));
             modelBuilder.Entity<Order>().HasOne(nameof(Order.OrderType));
         }
 
@@ -44,5 +45,6 @@ namespace WebStoreServer.DAL
         public DbSet<Order> Orders { get; set; }
         public DbSet<ProductOrderInfo> ProductOrderInfos { get; set; }
         public DbSet<OrderType> OrderTypes { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
     }
 }

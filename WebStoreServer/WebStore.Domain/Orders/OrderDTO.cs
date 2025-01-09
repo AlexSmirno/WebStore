@@ -8,6 +8,7 @@ namespace WebStore.Domain.Orders
         public string? Date { get; set; }
         public string? Time { get; set; }
         public string? OrderType { get; set; }
+        public string? OrderStatus { get; set; }
         public int ClientId { get; set; }
         public List<Product>? Products { get; set; }
 
@@ -19,6 +20,7 @@ namespace WebStore.Domain.Orders
             Date = order.Date;
             Time = order.Time;
             OrderType = order.OrderType?.Description;
+            OrderStatus = order.OrderStatus?.Description;
             Products = new List<Product>();
 
             foreach (var product in order.ProductOrderInfos)

@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using WebStore.Domain;
 using WebStore.Domain.Clients;
+using WebStoreServer.DAL;
 
 namespace WebStoreServer.DAL.Repositories
 {
@@ -25,18 +26,18 @@ namespace WebStoreServer.DAL.Repositories
             var clients = _context.Clients.Include(cl => cl.Orders);
             Client? foundClient = null;
 
-            if (client.Id > 0) 
+            if (client.Id > 0)
                 foundClient = await clients.FirstOrDefaultAsync(p => p.Id == client.Id);
 
-            if (foundClient == null && client.Mail != null) 
+            if (foundClient == null && client.Mail != null)
                 foundClient = await clients.FirstOrDefaultAsync(p => p.Mail == client.Mail);
 
-            if (foundClient == null && client.FullName != null) 
+            if (foundClient == null && client.FullName != null)
                 foundClient = await clients.FirstOrDefaultAsync(p => p.FullName == client.FullName);
 
             if (foundClient == null)
             {
-                return await Task.FromResult(new Result<Client>() 
+                return await Task.FromResult(new Result<Client>()
                 { IsSucceeded = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
             }
 
@@ -57,7 +58,7 @@ namespace WebStoreServer.DAL.Repositories
             {
                 Console.WriteLine(ex.Message);
                 //TODO: Think about error message for user
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
             }
         }
@@ -72,7 +73,7 @@ namespace WebStoreServer.DAL.Repositories
 
                 if (currentClient == null)
                 {
-                    return await Task.FromResult(new Result<bool>() 
+                    return await Task.FromResult(new Result<bool>()
                     { IsSucceeded = false, Data = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
                 }
                 if (newClient.Phone != null)
@@ -94,7 +95,7 @@ namespace WebStoreServer.DAL.Repositories
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
             }
         }
@@ -105,7 +106,7 @@ namespace WebStoreServer.DAL.Repositories
 
             if (count == 0)
             {
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = "There is no this client", ErrorCode = 404 });
             }
 

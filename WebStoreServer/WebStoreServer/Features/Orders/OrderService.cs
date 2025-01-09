@@ -13,6 +13,8 @@ namespace WebStoreServer.Features.Orders
         private ISender _sender;
 
         private List<OrderType> orderTypes;
+        private List<OrderStatus> orderStatuses;
+
         public OrderService(
             OrderRepository OrderRepository, 
             ProductRepository productRepository, 
@@ -23,6 +25,7 @@ namespace WebStoreServer.Features.Orders
             _sender = sender;
 
             orderTypes = _orderRepository.GetOrderTypes().Result.Data.ToList();
+            orderStatuses = _orderRepository.GetOrderStatuses().Result.Data.ToList();
         }
 
         public async Task<Result<IEnumerable<OrderDTO>>> GetOrdersAsync()
@@ -98,13 +101,17 @@ namespace WebStoreServer.Features.Orders
                 order.ProductOrderInfos.Find(poi => poi.ProductId == product.Id).Product = product;
             }
 
-            if (newOrder.OrderType == orderTypes[0].Description)
+            order.OrderStatusId = orderStatuses.FirstOrDefault(s => s.Description == "Pending").Id;
+
+            if (newOrder.OrderType == 
+                orderTypes.FirstOrDefault(s => s.Description == "Import").Description)
             {
                 order.OrderTypeId = orderTypes[0].Id;
                 return await CreateInOrder(order);
             }
 
-            if (newOrder.OrderType == orderTypes[1].Description)
+            if (newOrder.OrderType ==
+                orderTypes.FirstOrDefault(s => s.Description == "Export").Description)
             {
                 order.OrderTypeId = orderTypes[1].Id;
                 return await CreateOutOrder(order);
@@ -165,7 +172,20 @@ namespace WebStoreServer.Features.Orders
 
             foreach (var item in order.ProductOrderInfos)
             {
-                item.Product.Count += item.Count;
+                if (item.Product.Count >= item.Count)
+                {
+                    item.Product.Count -= item.Count;
+                }
+                else
+                {
+                    return await Task.FromResult(new Result<bool>()
+                    {
+                        IsSucceeded = false,
+                        ErrorCode = 400,
+                        ErrorMessage = "Not enought product: " + item.Product.Id + " " + item.Product.ProductName,
+                        Data = false
+                    });
+                }
             }
 
             var res = await _orderRepository.AddOrderAsync(order);

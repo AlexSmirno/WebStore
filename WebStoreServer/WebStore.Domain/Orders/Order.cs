@@ -10,6 +10,8 @@ namespace WebStore.Domain.Orders
         public string? Time { get; set; }
         public int OrderTypeId { get; set; }
         public OrderType? OrderType { get; set; }
+        public int OrderStatusId { get; set; }
+        public OrderStatus? OrderStatus { get; set; }
         public int ClientId { get; set; }
         public Client? Client { get; set; }
         public List<ProductOrderInfo>? ProductOrderInfos { get; set; }

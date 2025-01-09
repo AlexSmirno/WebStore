@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option csharp_namespace = "WebStore.DataServer";
+
+service ProductServiceGRPS {
+  rpc GetProducts (VoidRequest) returns (ListReply);
+  rpc GetProductsByObject (ProductRequest) returns (ProductReply);
+
+  rpc CreateProduct (ProductRequest) returns (ResultReply);
+  rpc UpdateProduct (ProductRequest) returns (ResultReply);
+  rpc DeleteProduct (ProductRequest) returns (ResultReply);
+}
+
+message VoidRequest{ }
+
+message ProductRequest {
+  int32 Id = 1;
+  string ProductName = 2;
+  int32 Count = 4;
+  string Description = 5;
+  int32 Size = 6;
+}
+
+message DeleteProductRequest {
+  int32 Id = 1;
+}
+
+message ProductReply {
+  int32 Id = 1;
+  string ProductName = 2;
+  int32 Count = 4;
+  string Description = 5;
+  int32 Size = 6;
+}
+
+message ListReply{
+	repeated ProductReply Products = 1;
+}
+
+message ResultReply{
+	bool result = 1;
+}
+
+message DecimalValue {
+
+    int64 units = 1;
+    sfixed32 nanos = 2;
+}

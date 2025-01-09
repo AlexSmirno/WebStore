@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using WebStore.Domain;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Products;
+using WebStoreServer.DAL;
 
 namespace WebStoreServer.DAL.Repositories
 {
@@ -27,7 +28,7 @@ namespace WebStoreServer.DAL.Repositories
 
             if (product == null)
             {
-                return await Task.FromResult(new Result<Product>() 
+                return await Task.FromResult(new Result<Product>()
                 { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
             }
 
@@ -40,7 +41,7 @@ namespace WebStoreServer.DAL.Repositories
 
             if (product == null)
             {
-                return await Task.FromResult(new Result<List<Product>>() 
+                return await Task.FromResult(new Result<List<Product>>()
                 { IsSucceeded = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
             }
 
@@ -62,7 +63,7 @@ namespace WebStoreServer.DAL.Repositories
 
             if (foundProducts == null || foundProducts.Count() == 0)
             {
-                return await Task.FromResult(new Result<IEnumerable<Product>> () 
+                return await Task.FromResult(new Result<IEnumerable<Product>>()
                 { IsSucceeded = false, ErrorMessage = "There are no these elements", ErrorCode = 404 });
             }
 
@@ -97,7 +98,7 @@ namespace WebStoreServer.DAL.Repositories
 
                 if (currentProduct == null)
                 {
-                    return await Task.FromResult(new Result<bool>() 
+                    return await Task.FromResult(new Result<bool>()
                     { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
                 }
 
@@ -123,7 +124,7 @@ namespace WebStoreServer.DAL.Repositories
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
             }
         }
@@ -134,7 +135,7 @@ namespace WebStoreServer.DAL.Repositories
 
             if (count == 0)
             {
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
             }
 

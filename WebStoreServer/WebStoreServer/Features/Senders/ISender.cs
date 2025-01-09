@@ -1,9 +1,10 @@
 ﻿using WebStore.Domain;
+using WebStore.Domain.Products;
 
 namespace WebStoreServer.Features.Senders
 {
     public interface ISender
     {
-        public Task<Result<string>> Send(string message);
+        public Task<Result<List<Product>>> GetProductAsync();
     }
 }

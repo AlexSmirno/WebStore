@@ -1,6 +1,8 @@
 ﻿using Grpc.Net.Client;
 using WebStore.Domain;
 using WebStore.Domain.Orders;
+using WebStore.Domain.Products;
+using WebStoreServer.Features.Products;
 
 namespace WebStoreServer.Features.Senders
 {
@@ -12,35 +14,29 @@ namespace WebStoreServer.Features.Senders
         }
 
 
-        public async Task<Result<string>> Send(string message)
+        public async Task<Result<List<Product>>> GetProductAsync()
         {
-            using var channel = GrpcChannel.ForAddress("http://localhost:5113");
+            using var channel = GrpcChannel.ForAddress("http://localhost:5005");
 
-            var client = new Greeter.GreeterClient(channel);
+            var client = new ProductServiceGRPS.ProductServiceGRPSClient(channel);
 
-            var reply = await client.SayHelloAsync(new HelloRequest { Name = message });
-            Console.WriteLine($"Ответ сервера: {reply.Message}");
+            var reply = await client.GetProductsAsync(new VoidRequest());
 
-            return new Result<string>(reply.Message);
-        }
+            var list = new List<Product>();
 
-        public async Task<Result<bool>> Send(Order Order)
-        {
-            try
+            foreach (var item in reply.Products)
             {
-                using var channel = GrpcChannel.ForAddress("http://localhost:5113");
-
-                var client = new Greeter.GreeterClient(channel);
-
-                var reply = await client.SayHelloAsync(new HelloRequest { Name = "" });
-            }
-            catch (Exception)
-            {
-
-                throw;
+                list.Add(new Product()
+                {
+                    Id = item.Id,
+                    Size = item.Size,
+                    Count = item.Count,
+                    Description = item.Description,
+                    ProductName = item.ProductName
+                });
             }
 
-            return new Result<bool>(true);
+            return new Result<List<Product>>(list);
         }
     }
 }

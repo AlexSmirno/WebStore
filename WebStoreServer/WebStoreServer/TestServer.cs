@@ -20,19 +20,6 @@ namespace WebStoreServer
                 var fileProvider = new PhysicalFileProvider(root);
                 config.AddJsonFile(fileProvider, "apptestsettings.json", false, false);
             });
-
-
-            /*
-            builder.ConfigureTestServices(services =>
-            {
-                services.AddDbContext<IContext, StoreContext> (options =>
-                {
-                    options.UseNpgsql("Host=localhost;Port=5432;Database=test_store;Username=postgres;Password=admin");
-                });
-
-                services.BuildServiceProvider();
-            });
-            */
         }
     }
 }

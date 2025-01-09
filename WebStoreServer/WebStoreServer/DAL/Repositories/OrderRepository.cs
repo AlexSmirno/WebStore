@@ -2,6 +2,7 @@
 
 using WebStore.Domain;
 using WebStore.Domain.Orders;
+using WebStoreServer.DAL;
 
 namespace WebStoreServer.DAL.Repositories
 {
@@ -21,6 +22,13 @@ namespace WebStoreServer.DAL.Repositories
             return await Task.FromResult(new Result<IEnumerable<OrderType>>(types));
         }
 
+        public async Task<Result<IEnumerable<OrderStatus>>> GetOrderStatuses()
+        {
+            var statuses = _context.OrderStatuses;
+
+            return await Task.FromResult(new Result<IEnumerable<OrderStatus>>(statuses));
+        }
+
         public async Task<Result<IEnumerable<Order>>> GetAllOrdersAsync()
         {
             var orders = _context.Orders;
@@ -33,21 +41,21 @@ namespace WebStoreServer.DAL.Repositories
             var orders = _context.Orders.Include(o => o.OrderType);
 
             IEnumerable<Order> foundOrders = orders;
-            if (order.Id > 0) 
+            if (order.Id > 0)
                 foundOrders = foundOrders.Where(o => o.Id == order.Id);
 
             if (order.Date != "")
-                foundOrders = foundOrders.Where(o => String.Compare(o.Date, order.Date) == -1);
+                foundOrders = foundOrders.Where(o => string.Compare(o.Date, order.Date) == -1);
 
             if (order.Time != "")
-                foundOrders = foundOrders.Where(o => String.Compare(o.Time, order.Time) == -1);
+                foundOrders = foundOrders.Where(o => string.Compare(o.Time, order.Time) == -1);
 
             if (order.OrderType != "")
                 foundOrders = foundOrders.Where(o => o.OrderType.Description == order.OrderType);
 
             if (order == null)
             {
-                return await Task.FromResult(new Result<IEnumerable<Order>>() 
+                return await Task.FromResult(new Result<IEnumerable<Order>>()
                 { IsSucceeded = false, ErrorMessage = "There are no these elements", ErrorCode = 404 });
             }
 
@@ -58,13 +66,6 @@ namespace WebStoreServer.DAL.Repositories
         {
             try
             {
-                /*
-                foreach (var orderInfo in newOrder.ProductOrderInfos)
-                {
-                    await _context.ProductOrderInfos.AddAsync(orderInfo);
-                }
-                */
-
                 var res = await _context.Orders.AddAsync(newOrder);
                 await _context.SaveChangesAsync();
 
@@ -73,7 +74,7 @@ namespace WebStoreServer.DAL.Repositories
             catch (Exception ex)
             {
                 //TODO: Think about error message for user
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 400 });
             }
         }
@@ -87,7 +88,7 @@ namespace WebStoreServer.DAL.Repositories
 
                 if (currentOrder == null)
                 {
-                    return await Task.FromResult(new Result<bool>() 
+                    return await Task.FromResult(new Result<bool>()
                     { IsSucceeded = false, Data = false, ErrorMessage = "There is no this element", ErrorCode = 404 });
                 }
 
@@ -112,7 +113,7 @@ namespace WebStoreServer.DAL.Repositories
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = ex.Message, ErrorCode = 503 });
             }
         }
@@ -123,7 +124,7 @@ namespace WebStoreServer.DAL.Repositories
 
             if (count == 0)
             {
-                return await Task.FromResult(new Result<bool>() 
+                return await Task.FromResult(new Result<bool>()
                 { IsSucceeded = false, Data = false, ErrorMessage = "Такого элемента нет", ErrorCode = 404 });
             }
 

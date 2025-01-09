@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 using WebStore.Domain.Products;
+using WebStoreServer.Features.Senders;
 
 namespace WebStoreServer.Features.Products
 {
@@ -8,16 +10,19 @@ namespace WebStoreServer.Features.Products
     public class ProductController : ControllerBase
     {
         private ProductService _productService;
+        private ISender _sender;
 
-        public ProductController(ProductService productService)
+        public ProductController(ProductService productService, ISender sender)
         {
             _productService = productService;
+            _sender = sender;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var result = await _productService.GetProductsAsync();
+            var result = await _sender.GetProductAsync();
+            //var result = await _productService.GetProductsAsync();
 
             if (result.IsSucceeded)
             {

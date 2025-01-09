@@ -5,9 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
-
-using WebStoreServer.DAL;
 using WebStoreServer;
+using WebStoreServer.DAL;
 
 namespace Tests
 {
@@ -51,6 +50,11 @@ namespace Tests
         {
             var context = _services.GetRequiredService<StoreContext>();
 
+            await context.OrderStatuses.AddAsync(new OrderStatus() { Description = "Pending" });
+            await context.OrderStatuses.AddAsync(new OrderStatus() { Description = "Accepted" });
+            await context.OrderStatuses.AddAsync(new OrderStatus() { Description = "Completed" });
+            await context.OrderStatuses.AddAsync(new OrderStatus() { Description = "Rejected" });
+
             await context.OrderTypes.AddAsync(new OrderType() { Description = "Import" });
             await context.OrderTypes.AddAsync(new OrderType() { Description = "Export" });
 
@@ -58,9 +62,9 @@ namespace Tests
             await context.Clients.AddAsync(new Client() { Mail = "second@mail.ru", Password = "321", FullName = "Name2" });
             await context.Clients.AddAsync(new Client() { Mail = "third@mail.ru", Password = "213", FullName = "Name3" });
 
-            await context.Products.AddAsync(new Product() { ProductName = "first", Description = "text", Count = 0, Size = 1, Price = 100.1m });
-            await context.Products.AddAsync(new Product() { ProductName = "second", Description = "text", Count = 0, Size = 1, Price = 100.1m });
-            await context.Products.AddAsync(new Product() { ProductName = "third", Description = "text", Count = 0, Size = 1, Price = 100.1m });
+            await context.Products.AddAsync(new Product() { ProductName = "first", Description = "text", Count = 10, Size = 1, Price = 100.1m });
+            await context.Products.AddAsync(new Product() { ProductName = "second", Description = "text", Count = 10, Size = 1, Price = 100.1m });
+            await context.Products.AddAsync(new Product() { ProductName = "third", Description = "text", Count = 10, Size = 1, Price = 100.1m });
 
             await context.SaveChangesAsync();
         }
