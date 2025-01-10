@@ -40,9 +40,3 @@ message ListReply{
 message ResultReply{
 	bool result = 1;
 }
-
-message DecimalValue {
-
-    int64 units = 1;
-    sfixed32 nanos = 2;
-}

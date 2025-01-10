@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebStore.DataServer\WebStore.DataServer.csproj" />
     <ProjectReference Include="..\WebStoreServer\WebStoreServer.csproj" />
   </ItemGroup>
 

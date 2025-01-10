@@ -22,7 +22,6 @@ namespace WebStoreServer.Features.Products
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
             var result = await _sender.GetProductAsync();
-            //var result = await _productService.GetProductsAsync();
 
             if (result.IsSucceeded)
             {

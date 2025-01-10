@@ -11,18 +11,20 @@ namespace WebStore.DataServer.Services
             _productRepository = productRepository;
         }
 
-        public ListReply GetProducts(VoidRequest request, ServerCallContext context)
+        public override async Task<ListReply> GetProducts(VoidRequest request, ServerCallContext context)
         {
             var list = new ListReply();
 
             foreach (var product in _productRepository.GetProducts())
             {
                 var productReply = new ProductReply();
+                productReply.Id = product.Id;
+                productReply.ProductName = product.ProductName;
 
                 list.Products.Add(productReply);
             }
 
-            return list;
+            return await Task.FromResult<ListReply>(list);
         }
     }
 }

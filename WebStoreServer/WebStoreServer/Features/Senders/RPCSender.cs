@@ -16,12 +16,12 @@ namespace WebStoreServer.Features.Senders
 
         public async Task<Result<List<Product>>> GetProductAsync()
         {
-            using var channel = GrpcChannel.ForAddress("http://localhost:5005");
+            using var channel = GrpcChannel.ForAddress("https://localhost:5005");
 
             var client = new ProductServiceGRPS.ProductServiceGRPSClient(channel);
 
             var reply = await client.GetProductsAsync(new VoidRequest());
-
+             
             var list = new List<Product>();
 
             foreach (var item in reply.Products)

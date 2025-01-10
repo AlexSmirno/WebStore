@@ -27,6 +27,5 @@ namespace Tests
             var db = _services.GetRequiredService<StoreContext>();
             Assert.True(res.Count == 2, res.Count.ToString());
         }
-
     }
 }
