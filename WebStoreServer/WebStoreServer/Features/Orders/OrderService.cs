@@ -2,7 +2,7 @@
 using WebStore.Domain;
 using WebStore.Domain.Orders;
 using WebStoreServer.DAL.Repositories;
-using WebStoreServer.Features.Senders;
+using WebStoreServer.Features.Products;
 
 namespace WebStoreServer.Features.Orders
 {
@@ -10,20 +10,13 @@ namespace WebStoreServer.Features.Orders
     {
         private OrderRepository _orderRepository;
         private ProductRepository _productRepository;
-        private ISender _sender;
+        private ProductRPCSender _sender;
 
         private List<OrderType> orderTypes;
         private List<OrderStatus> orderStatuses;
 
-        public OrderService(
-            OrderRepository OrderRepository, 
-            ProductRepository productRepository, 
-            ISender sender)
+        public OrderService(OrderRepository OrderRepository)
         {
-            _orderRepository = OrderRepository;
-            _productRepository = productRepository;
-            _sender = sender;
-
             orderTypes = _orderRepository.GetOrderTypes().Result.Data.ToList();
             orderStatuses = _orderRepository.GetOrderStatuses().Result.Data.ToList();
         }

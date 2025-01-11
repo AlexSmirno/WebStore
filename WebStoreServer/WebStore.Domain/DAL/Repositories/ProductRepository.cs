@@ -58,7 +58,7 @@ namespace WebStoreServer.DAL.Repositories
                 foundProducts = products.Where(p => p.Id == product.Id);
 
             if (product.ProductName != null && product.ProductName != "")
-                foundProducts = products.Where(p => EF.Functions.FuzzyStringMatchDifference(p.ProductName, product.ProductName) > 0);
+                foundProducts = products.Where(p => p.ProductName == product.ProductName);
 
 
             if (foundProducts == null || foundProducts.Count() == 0)

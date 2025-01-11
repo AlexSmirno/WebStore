@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using WebStore.Domain.Products;
-using WebStoreServer.Features.Senders;
 
 namespace WebStoreServer.Features.Products
 {
@@ -9,10 +8,9 @@ namespace WebStoreServer.Features.Products
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private ProductService _productService;
-        private ISender _sender;
+        private ProductRPCSender _sender;
 
-        public ProductController(ISender sender)
+        public ProductController(ProductRPCSender sender)
         {
             _sender = sender;
         }
@@ -20,7 +18,7 @@ namespace WebStoreServer.Features.Products
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var result = await _sender.GetProductAsync();
+            var result = await _sender.GetProductsAsync();
 
             if (result.IsSucceeded)
             {
@@ -32,13 +30,13 @@ namespace WebStoreServer.Features.Products
 
 
         [HttpPost("/api/Products", Name = "Products")]
-        public async Task<ActionResult<List<Product>>> GetProductsByObject([FromBody] Product product)
+        public async Task<ActionResult<Product>> GetProductByObject([FromBody] Product product)
         {
-            var result = await _productService.GetProductsByObject(product);
+            var result = await _sender.GetProductByObjectAsync(product);
 
             if (result.IsSucceeded)
             {
-                return await Task.FromResult(result.Data.ToList());
+                return await Task.FromResult(result.Data);
             }
 
             return StatusCode(result.ErrorCode, result.ErrorMessage);
@@ -47,7 +45,7 @@ namespace WebStoreServer.Features.Products
         [HttpPost]
         public async Task<ActionResult<bool>> CreateProduct([FromBody] Product product)
         {
-            var result = await _productService.CreateProduct(product);
+            var result = await _sender.CreateProductAsync(product);
 
             if (result.IsSucceeded)
             {
@@ -60,7 +58,7 @@ namespace WebStoreServer.Features.Products
         [HttpPut]
         public async Task<ActionResult<bool>> UpdateProduct([FromBody] Product product)
         {
-            var result = await _productService.UpdateProduct(product);
+            var result = await _sender.UpdateProductAsync(product);
 
             if (result.IsSucceeded)
             {
@@ -73,7 +71,7 @@ namespace WebStoreServer.Features.Products
         [HttpDelete]
         public async Task<ActionResult<bool>> DeleteProduct([FromBody] Product product)
         {
-            var result = await _productService.DeleteProduct(product);
+            var result = await _sender.DeleteProductAsync(product);
 
             if (result.IsSucceeded)
             {

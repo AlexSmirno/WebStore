@@ -1,6 +1,8 @@
 ﻿using Grpc.Core;
-using WebStore.DataServer.Extention;
+
 using WebStore.Domain.Products;
+using WebStore.DataServer.Extention;
+
 using WebStoreServer.DAL.Repositories;
 
 namespace WebStore.DataServer.Services

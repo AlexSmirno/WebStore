@@ -5,7 +5,6 @@ using WebStoreServer.DAL.Repositories;
 using WebStoreServer.Features.Clients;
 using WebStoreServer.Features.Orders;
 using WebStoreServer.Features.Products;
-using WebStoreServer.Features.Senders;
 
 namespace WebStoreServer
 {
@@ -19,7 +18,7 @@ namespace WebStoreServer
 
             builder.Services.AddControllers();
 
-            builder.Services.AddTransient<ISender, RPCSender>();
+            builder.Services.AddTransient<ProductRPCSender>();
             
             /*
             builder.Services.AddDbContext<StoreContext>(options =>
