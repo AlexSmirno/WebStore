@@ -18,24 +18,17 @@ namespace WebStoreServer
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddTransient<ProductService>();
-            builder.Services.AddTransient<ProductRepository>();
-
-            builder.Services.AddTransient<OrderService>();
-            builder.Services.AddTransient<OrderRepository>();
-
-            builder.Services.AddTransient<ClientService>();
-            builder.Services.AddTransient<ClientRepository>();
 
             builder.Services.AddTransient<ISender, RPCSender>();
-
-
+            
+            /*
             builder.Services.AddDbContext<StoreContext>(options =>
             {
                 string str = builder.Configuration["Database:ConnectionString"];
                 Console.WriteLine(str);
                 options.UseNpgsql(str);
             });
+            */
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

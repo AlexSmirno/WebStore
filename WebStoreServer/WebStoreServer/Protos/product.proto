@@ -4,7 +4,7 @@ option csharp_namespace = "WebStoreServer";
 
 service ProductServiceGRPS {
   rpc GetProducts (VoidRequest) returns (ListReply);
-  rpc GetProductsByObject (ProductRequest) returns (ProductReply);
+  rpc GetProductsByObject (ProductRequest) returns (ProductRequest);
 
   rpc CreateProduct (ProductRequest) returns (ResultReply);
   rpc UpdateProduct (ProductRequest) returns (ResultReply);
@@ -25,16 +25,8 @@ message DeleteProductRequest {
   int32 Id = 1;
 }
 
-message ProductReply {
-  int32 Id = 1;
-  string ProductName = 2;
-  int32 Count = 4;
-  string Description = 5;
-  int32 Size = 6;
-}
-
 message ListReply{
-	repeated ProductReply Products = 1;
+	repeated ProductRequest Products = 1;
 }
 
 message ResultReply{

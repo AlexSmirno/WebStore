@@ -1,5 +1,8 @@
-using WebStore.DataServer.DAL;
+using Microsoft.EntityFrameworkCore;
 using WebStore.DataServer.Services;
+
+using WebStoreServer.DAL;
+using WebStoreServer.DAL.Repositories;
 
 namespace WebStore.DataServer
 {
@@ -13,7 +16,11 @@ namespace WebStore.DataServer
             builder.Services.AddGrpc();
 
             builder.Services.AddTransient<ProductRepository>();
-            builder.Services.AddTransient<StoreContext>();
+
+            builder.Services.AddDbContext<StoreContext>(options =>
+            {
+                options.UseNpgsql("Host=localhost;Port=5432;Database=test_store;Username=postgres;Password=admin");
+            });
 
             var app = builder.Build();
 

@@ -1,5 +1,7 @@
 ﻿using Grpc.Core;
-using WebStore.DataServer.DAL;
+using WebStore.DataServer.Extention;
+using WebStore.Domain.Products;
+using WebStoreServer.DAL.Repositories;
 
 namespace WebStore.DataServer.Services
 {
@@ -15,16 +17,68 @@ namespace WebStore.DataServer.Services
         {
             var list = new ListReply();
 
-            foreach (var product in _productRepository.GetProducts())
+            var productsResult = await _productRepository.GetAllProductsAsync();
+
+            foreach (var product in productsResult.Data)
             {
-                var productReply = new ProductReply();
-                productReply.Id = product.Id;
-                productReply.ProductName = product.ProductName;
+                var productReply = product.ToProductRequest();
 
                 list.Products.Add(productReply);
             }
 
             return await Task.FromResult<ListReply>(list);
+        }
+
+        public override async Task<ProductRequest> GetProductsByObject(ProductRequest request, ServerCallContext context)
+        {
+            var product = new Product();
+            product.FromProductRequest(request);
+
+            var productsResult = await _productRepository.GetProductsByObject(product);
+
+            var recivedProduct = productsResult.Data.FirstOrDefault();
+
+            return await Task.FromResult<ProductRequest>(recivedProduct.ToProductRequest());
+        }
+
+
+        public override async Task<ResultReply> CreateProduct(ProductRequest request, ServerCallContext context)
+        {
+            var product = new Product();
+            product.FromProductRequest(request);
+
+            var productsResult = await _productRepository.AddProductAsync(product);
+
+            var result = new ResultReply();
+            result.Result = productsResult.Data;
+
+            return await Task.FromResult<ResultReply>(result);
+        }
+
+        public override async Task<ResultReply> UpdateProduct(ProductRequest request, ServerCallContext context)
+        {
+            var product = new Product();
+            product.FromProductRequest(request);
+
+            var productsResult = await _productRepository.UpdateProductAsync(product);
+
+            var result = new ResultReply();
+            result.Result = productsResult.Data;
+
+            return await Task.FromResult<ResultReply>(result);
+        }
+        
+        public override async Task<ResultReply> DeleteProduct(ProductRequest request, ServerCallContext context)
+        {
+            var product = new Product();
+            product.FromProductRequest(request);
+
+            var productsResult = await _productRepository.DeleteProductAsync(product);
+
+            var result = new ResultReply();
+            result.Result = productsResult.Data;
+
+            return await Task.FromResult<ResultReply>(result);
         }
     }
 }

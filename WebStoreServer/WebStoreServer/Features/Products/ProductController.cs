@@ -12,9 +12,8 @@ namespace WebStoreServer.Features.Products
         private ProductService _productService;
         private ISender _sender;
 
-        public ProductController(ProductService productService, ISender sender)
+        public ProductController(ISender sender)
         {
-            _productService = productService;
             _sender = sender;
         }
 

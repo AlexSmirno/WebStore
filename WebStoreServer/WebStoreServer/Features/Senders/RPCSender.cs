@@ -13,7 +13,6 @@ namespace WebStoreServer.Features.Senders
 
         }
 
-
         public async Task<Result<List<Product>>> GetProductAsync()
         {
             using var channel = GrpcChannel.ForAddress("https://localhost:5005");

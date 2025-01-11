@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 
+using WebStore.Domain.Products;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
-using WebStore.Domain.Products;
-using WebStoreServer;
+
 using WebStoreServer.DAL;
+using WebStoreServer;
 
 namespace Tests
 {

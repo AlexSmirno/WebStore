@@ -8,7 +8,6 @@ namespace WebStoreServer
 {
     public class TestServer : WebApplicationFactory<Program>
     {
-
         public TestServer() { }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -19,6 +18,15 @@ namespace WebStoreServer
                 var root = Directory.GetCurrentDirectory();
                 var fileProvider = new PhysicalFileProvider(root);
                 config.AddJsonFile(fileProvider, "apptestsettings.json", false, false);
+            });
+
+
+            builder.ConfigureTestServices(services =>
+            {
+                services.AddDbContext<StoreContext>(options =>
+                {
+                    options.UseNpgsql("Host=localhost;Port=5432;Database=test_store;Username=postgres;Password=admin");
+                });
             });
         }
     }

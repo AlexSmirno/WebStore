@@ -9,9 +9,9 @@ namespace WebStoreServer.Features.Orders
     {
         private OrderService _OrderService;
 
-        public OrderController(OrderService OrderService)
+        public OrderController()
         {
-            _OrderService = OrderService;
+
         }
 
         [HttpGet]
