@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebStore.Domain.Orders;
+using WebStore.Domain.Rabbit;
+using WebStoreServer.Features.gRPCSenders;
+using WebStoreServer.Features.RabbitMQSender;
 
 namespace WebStoreServer.Features.Orders
 {
@@ -8,10 +11,13 @@ namespace WebStoreServer.Features.Orders
     public class OrderController : ControllerBase
     {
         private OrderService _OrderService;
+        private OrderRPCSender _rpcSender;
+        private OrderMQSender _mqSender;
 
-        public OrderController()
+        public OrderController(OrderRPCSender rpcSender, OrderMQSender mqSender)
         {
-
+            _rpcSender = rpcSender;
+            _mqSender = mqSender;
         }
 
         [HttpGet]
@@ -27,11 +33,10 @@ namespace WebStoreServer.Features.Orders
             return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
 
-
-        [HttpPost("/api/Orders", Name = "Orders")]
-        public async Task<ActionResult<List<OrderDTO>>> GetOrdersByDTO([FromBody] OrderDTO order)
+        [HttpGet("/api/Order/{id}", Name = "OrdersById")]
+        public async Task<ActionResult<List<OrderDTO>>> GetOrders(int id)
         {
-            var result = await _OrderService.GetOrderByDTOAsync(order);
+            var result = await _rpcSender.GetOrdersByClientId(id);
 
             if (result.IsSucceeded)
             {
@@ -42,42 +47,18 @@ namespace WebStoreServer.Features.Orders
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateOrder([FromBody] OrderDTO Order)
+        public async Task<ActionResult<bool>> CreateOrder([FromBody] OrderDTO order)
         {
-            var result = await _OrderService.CreateOrder(Order);
-
-            if (result.IsSucceeded)
+            try
             {
-                return await Task.FromResult(result.Data);
+                await _mqSender.PublishMessageAsync(order, RabbitMQQueues.OrderQueue);
+                return await Task.FromResult(true);
             }
-
-            return StatusCode(result.ErrorCode, result.ErrorMessage);
-        }
-
-        [HttpPut]
-        public async Task<ActionResult<bool>> UpdateOrder([FromBody] Order Order)
-        {
-            var result = await _OrderService.UpdateOrder(Order);
-
-            if (result.IsSucceeded)
+            catch (Exception ex)
             {
-                return await Task.FromResult(result.Data);
+                Console.WriteLine(ex);
+                return await Task.FromResult(false);
             }
-
-            return StatusCode(result.ErrorCode, result.ErrorMessage);
-        }
-
-        [HttpDelete]
-        public async Task<ActionResult<bool>> DeleteOrder([FromBody] Order Order)
-        {
-            var result = await _OrderService.DeleteOrder(Order);
-
-            if (result.IsSucceeded)
-            {
-                return await Task.FromResult(result.Data);
-            }
-
-            return StatusCode(result.ErrorCode, result.ErrorMessage);
         }
     }
 }

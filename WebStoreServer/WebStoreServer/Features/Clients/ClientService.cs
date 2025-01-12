@@ -1,7 +1,7 @@
 ﻿using WebStore.Domain;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
-using WebStoreServer.DAL.Repositories;
+using WebStore.Domain.DAL.Repositories;
 
 namespace WebStoreServer.Features.Clients
 {

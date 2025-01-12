@@ -3,7 +3,7 @@ using WebStore.Domain;
 using WebStore.Domain.Products;
 using WebStoreServer.Extention;
 
-namespace WebStoreServer.Features.Products
+namespace WebStoreServer.Features.gRPCSenders
 {
     public class ProductRPCSender
     {

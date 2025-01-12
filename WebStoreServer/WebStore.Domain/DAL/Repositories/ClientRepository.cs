@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 using WebStore.Domain;
 using WebStore.Domain.Clients;
-using WebStoreServer.DAL;
 
-namespace WebStoreServer.DAL.Repositories
+namespace WebStore.Domain.DAL.Repositories
 {
     public class ClientRepository
     {

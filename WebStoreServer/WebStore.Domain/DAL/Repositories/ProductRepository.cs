@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
-using WebStore.Domain;
-using WebStore.Domain.Clients;
 using WebStore.Domain.Products;
-using WebStoreServer.DAL;
 
-namespace WebStoreServer.DAL.Repositories
+namespace WebStore.Domain.DAL.Repositories
 {
     public class ProductRepository
     {

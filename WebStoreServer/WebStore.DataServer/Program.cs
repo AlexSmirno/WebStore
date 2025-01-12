@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebStore.DataServer.Services;
 
-using WebStoreServer.DAL;
-using WebStoreServer.DAL.Repositories;
+using WebStore.Domain.DAL.Repositories;
+using WebStore.Domain.DAL;
 
 namespace WebStore.DataServer
 {
@@ -16,6 +16,7 @@ namespace WebStore.DataServer
             builder.Services.AddGrpc();
 
             builder.Services.AddTransient<ProductRepository>();
+            builder.Services.AddTransient<OrderRepository>();
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {
@@ -25,6 +26,7 @@ namespace WebStore.DataServer
             var app = builder.Build();
 
             app.MapGrpcService<ProductService>();
+            app.MapGrpcService<OrderService>();
 
             // Configure the HTTP request pipeline.
             app.MapGet("/", () => 

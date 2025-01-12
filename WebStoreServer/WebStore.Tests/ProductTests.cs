@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using System.Net;
 using System.Net.Http.Json;
 
 using WebStoreServer;
-using WebStoreServer.DAL;
 using WebStore.Domain.Products;
+using WebStore.Domain.DAL;
 
 namespace Tests
 {
@@ -18,14 +17,14 @@ namespace Tests
         }
 
         [Fact]
-        public async Task GetClients()
+        public async Task GetProduct()
         {
             var res = await _client.GetFromJsonAsync<List<Product>>($"/api/Product");
 
             Assert.True(res != null, "null");
 
-            var db = _services.GetRequiredService<StoreContext>();
-            Assert.True(res.Count == 2, res.Count.ToString());
+            var db = _services.GetRequiredService<StoreContext>().Products.ToList();
+            Assert.True(res.Count == db.Count(), res.Count.ToString());
         }
     }
 }

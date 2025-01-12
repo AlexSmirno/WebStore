@@ -3,7 +3,7 @@
 using WebStore.Domain.Products;
 using WebStore.DataServer.Extention;
 
-using WebStoreServer.DAL.Repositories;
+using WebStore.Domain.DAL.Repositories;
 
 namespace WebStore.DataServer.Services
 {

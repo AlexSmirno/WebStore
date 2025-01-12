@@ -6,8 +6,8 @@ using WebStore.Domain.Products;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 
-using WebStoreServer.DAL;
 using WebStoreServer;
+using WebStore.Domain.DAL;
 
 namespace Tests
 {
@@ -63,9 +63,41 @@ namespace Tests
             await context.Clients.AddAsync(new Client() { Mail = "second@mail.ru", Password = "321", FullName = "Name2" });
             await context.Clients.AddAsync(new Client() { Mail = "third@mail.ru", Password = "213", FullName = "Name3" });
 
-            await context.Products.AddAsync(new Product() { ProductName = "first", Description = "text", Count = 10, Size = 1, Price = 100.1m });
-            await context.Products.AddAsync(new Product() { ProductName = "second", Description = "text", Count = 10, Size = 1, Price = 100.1m });
-            await context.Products.AddAsync(new Product() { ProductName = "third", Description = "text", Count = 10, Size = 1, Price = 100.1m });
+            await context.Products.AddAsync(new Product() { ProductName = "first", Description = "text", Count = 0, Size = 1, Price = 100.1m });
+            await context.Products.AddAsync(new Product() { ProductName = "second", Description = "text", Count = 0, Size = 1, Price = 100.1m });
+            await context.Products.AddAsync(new Product() { ProductName = "third", Description = "text", Count = 0, Size = 1, Price = 100.1m });
+
+
+            await context.Orders.AddAsync(
+                new Order()
+                {
+                    Date = DateTime.Now.ToString("dd.MM.YYYY"),
+                    Time = DateTime.Now.ToString("hh:mm"),
+                    OrderStatusId = 1,
+                    OrderTypeId = 1,
+                    ClientId = 1,
+                    ProductOrderInfos = new List<ProductOrderInfo>
+                    {
+                        new ProductOrderInfo() 
+                        {
+                            ProductId = 1,
+                            Count = 10
+                        },
+
+                        new ProductOrderInfo()
+                        {
+                            ProductId = 2,
+                            Count = 10
+                        },
+
+                        new ProductOrderInfo()
+                        {
+                            ProductId = 3,
+                            Count = 10
+                        },
+                    }
+                }
+                );
 
             await context.SaveChangesAsync();
         }

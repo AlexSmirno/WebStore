@@ -1,6 +1,6 @@
 ﻿using WebStore.Domain;
 using WebStore.Domain.Products;
-using WebStoreServer.DAL.Repositories;
+using WebStore.Domain.DAL.Repositories;
 
 namespace WebStoreServer.Features.Products
 {

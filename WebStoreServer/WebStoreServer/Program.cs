@@ -1,10 +1,8 @@
 
-using Microsoft.EntityFrameworkCore;
-using WebStoreServer.DAL;
-using WebStoreServer.DAL.Repositories;
-using WebStoreServer.Features.Clients;
-using WebStoreServer.Features.Orders;
-using WebStoreServer.Features.Products;
+using Microsoft.Extensions.Configuration;
+using WebStore.Domain.Rabbit;
+using WebStoreServer.Features.gRPCSenders;
+using WebStoreServer.Features.RabbitMQSender;
 
 namespace WebStoreServer
 {
@@ -14,11 +12,21 @@ namespace WebStoreServer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
 
+            builder.Services.Configure<RabbitMQSetting>(options =>
+            {
+                options.HostName = builder.Configuration["RabbitMQ:HostName"];
+                options.UserName = builder.Configuration["RabbitMQ:UserName"];
+                options.Password = builder.Configuration["RabbitMQ:Password"];
+            });
+
+            builder.Services.AddTransient<RabbitMQSetting>();
+
             builder.Services.AddTransient<ProductRPCSender>();
+            builder.Services.AddTransient<OrderRPCSender>();
+
+            builder.Services.AddTransient<OrderMQSender>();
             
             /*
             builder.Services.AddDbContext<StoreContext>(options =>

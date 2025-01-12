@@ -24,5 +24,6 @@ namespace WebStore.DataServer.Extention
                 Size = product.Size,
             };
         }
+
     }
 }

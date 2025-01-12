@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using WebStoreServer.DAL;
+
+using WebStore.Domain.DAL;
 
 namespace WebStoreServer
 {

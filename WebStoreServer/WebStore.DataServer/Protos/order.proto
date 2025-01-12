@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "WebStore.DataServer";
+
+service OrderServiceGRPS {
+  rpc GetOrdersByClientId (ClientRequest) returns (OrderListReply);
+}
+
+message ClientRequest {
+  int32 Id = 1;
+}
+
+message OrderListReply{
+	repeated OrderReply Orders = 1;
+}
+
+message OrderReply {
+  int32 Id = 1;
+  string Date = 2;
+  string Time = 3;
+  string OrderType = 4;
+  string Status = 5;
+  int32 ClientId = 6;
+  ProductList ProductList = 7;
+}
+ 
+message ProductList{
+	repeated ProductReply Products = 1;
+}
+
+message ProductReply {
+  int32 ProductId = 1;
+  int32 Count = 3;
+}

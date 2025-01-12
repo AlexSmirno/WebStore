@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using WebStore.Domain;
 using WebStore.Domain.Orders;
-using WebStoreServer.DAL;
 
-namespace WebStoreServer.DAL.Repositories
+namespace WebStore.Domain.DAL.Repositories
 {
     public class OrderRepository
     {
@@ -32,6 +30,13 @@ namespace WebStoreServer.DAL.Repositories
         public async Task<Result<IEnumerable<Order>>> GetAllOrdersAsync()
         {
             var orders = _context.Orders;
+
+            return await Task.FromResult(new Result<IEnumerable<Order>>(orders));
+        }
+
+        public async Task<Result<IEnumerable<Order>>> GetOrdersByClientIdAsync(int id)
+        {
+            var orders = _context.Orders.Include(o => o.ProductOrderInfos).Include(o => o.Client).Where(o => o.ClientId == id);
 
             return await Task.FromResult(new Result<IEnumerable<Order>>(orders));
         }

@@ -1,9 +1,8 @@
-﻿
-using WebStore.Domain;
+﻿using WebStore.Domain;
 using WebStore.Domain.Orders;
 using WebStore.Domain.DAL.Repositories;
 
-namespace WebStoreServer.Features.Orders
+namespace WebStore.OrderServer.Orders
 {
     public class OrderService
     {
@@ -13,59 +12,11 @@ namespace WebStoreServer.Features.Orders
         private List<OrderType> orderTypes;
         private List<OrderStatus> orderStatuses;
 
-        public OrderService(OrderRepository OrderRepository)
+        public OrderService(OrderRepository orderRepository)
         {
+            _orderRepository = orderRepository;
             orderTypes = _orderRepository.GetOrderTypes().Result.Data.ToList();
             orderStatuses = _orderRepository.GetOrderStatuses().Result.Data.ToList();
-        }
-
-        public async Task<Result<IEnumerable<OrderDTO>>> GetOrdersAsync()
-        {
-            var ordersResult = await _orderRepository.GetAllOrdersAsync();
-
-            if (ordersResult.IsSucceeded == false)
-            {
-                return new Result<IEnumerable<OrderDTO>>
-                {
-                    IsSucceeded = false,
-                    ErrorCode = ordersResult.ErrorCode,
-                    ErrorMessage = ordersResult.ErrorMessage
-                };
-            }
-
-            var newResult = new Result<IEnumerable<OrderDTO>>();
-            var list = new List<OrderDTO>();
-
-            foreach (var order in ordersResult.Data) 
-                list.Add(new OrderDTO(order));
-
-            newResult.Data = list;
-            
-            return await Task.FromResult(newResult);
-        }
-
-        public async Task<Result<IEnumerable<OrderDTO>>> GetOrderByDTOAsync(OrderDTO order)
-        {
-            var result = await _orderRepository.GetOrdersByDTO(order);
-
-            if (result.IsSucceeded == false)
-            {
-                return await Task.FromResult(new Result<IEnumerable<OrderDTO>>()
-                {
-                    IsSucceeded = false,
-                    ErrorCode = result.ErrorCode,
-                    ErrorMessage = result.ErrorMessage
-                });
-            }
-
-            List<OrderDTO> orders = new List<OrderDTO>();
-
-            foreach (var item in result.Data)
-            {
-                orders.Add(new OrderDTO(item));
-            }
-
-            return await Task.FromResult(new Result<IEnumerable<OrderDTO>>(orders));
         }
 
         public async Task<Result<bool>> CreateOrder(OrderDTO newOrder)
@@ -180,19 +131,6 @@ namespace WebStoreServer.Features.Orders
             }
 
             var res = await _orderRepository.AddOrderAsync(order);
-
-            return await Task.FromResult(res);
-        }
-        public async Task<Result<bool>> UpdateOrder(Order newOrder)
-        {
-            var res = await _orderRepository.UpdateOrderAsync(newOrder);
-
-            return await Task.FromResult(res);
-        }
-
-        public async Task<Result<bool>> DeleteOrder(Order newOrder)
-        {
-            var res = await _orderRepository.DeleteOrderAsync(newOrder);
 
             return await Task.FromResult(res);
         }

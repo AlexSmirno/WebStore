@@ -4,7 +4,7 @@ using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
 
-namespace WebStoreServer.DAL
+namespace WebStore.Domain.DAL
 {
     public class StoreContext : DbContext
     {
