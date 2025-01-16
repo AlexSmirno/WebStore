@@ -1,9 +1,10 @@
 ﻿using Grpc.Net.Client;
 using WebStore.Domain;
 using WebStore.Domain.Orders;
-using WebStoreServer.Extention;
+using WebStore.API;
+using WebStore.API.Extention;
 
-namespace WebStoreServer.Features.gRPCSenders
+namespace WebStore.API.Features.Orders
 {
     public class OrderRPCSender
     {

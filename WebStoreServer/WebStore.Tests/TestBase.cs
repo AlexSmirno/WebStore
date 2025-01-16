@@ -6,7 +6,7 @@ using WebStore.Domain.Products;
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 
-using WebStoreServer;
+using WebStore.API;
 using WebStore.Domain.DAL;
 
 namespace Tests

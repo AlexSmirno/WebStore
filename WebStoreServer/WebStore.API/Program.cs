@@ -1,10 +1,9 @@
 
-using Microsoft.Extensions.Configuration;
 using WebStore.Domain.Rabbit;
-using WebStoreServer.Features.gRPCSenders;
-using WebStoreServer.Features.RabbitMQSender;
+using WebStore.API.Features.Orders;
+using WebStore.API.Features.Products;
 
-namespace WebStoreServer
+namespace WebStore.API
 {
     public partial class Program
     {
@@ -20,8 +19,6 @@ namespace WebStoreServer
                 options.UserName = builder.Configuration["RabbitMQ:UserName"];
                 options.Password = builder.Configuration["RabbitMQ:Password"];
             });
-
-            builder.Services.AddTransient<RabbitMQSetting>();
 
             builder.Services.AddTransient<ProductRPCSender>();
             builder.Services.AddTransient<OrderRPCSender>();
@@ -50,14 +47,11 @@ namespace WebStoreServer
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
 
             app.MapControllers();
 
             app.Run();
-
         }
     }
 }

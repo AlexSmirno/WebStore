@@ -1,6 +1,6 @@
 
 
-using WebStoreServer;
+using WebStore.API;
 
 namespace Tests
 {

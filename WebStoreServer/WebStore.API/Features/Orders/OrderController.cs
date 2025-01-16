@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Rabbit;
-using WebStoreServer.Features.gRPCSenders;
-using WebStoreServer.Features.RabbitMQSender;
 
-namespace WebStoreServer.Features.Orders
+namespace WebStore.API.Features.Orders
 {
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private OrderService _OrderService;
         private OrderRPCSender _rpcSender;
         private OrderMQSender _mqSender;
 
@@ -20,20 +17,7 @@ namespace WebStoreServer.Features.Orders
             _mqSender = mqSender;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<OrderDTO>>> GetOrders()
-        {
-            var result = await _OrderService.GetOrdersAsync();
-
-            if (result.IsSucceeded)
-            {
-                return await Task.FromResult(result.Data.ToList());
-            }
-
-            return StatusCode(result.ErrorCode, result.ErrorMessage);
-        }
-
-        [HttpGet("/api/Order/{id}", Name = "OrdersById")]
+        [HttpGet("{id}", Name = "OrdersById")]
         public async Task<ActionResult<List<OrderDTO>>> GetOrders(int id)
         {
             var result = await _rpcSender.GetOrdersByClientId(id);

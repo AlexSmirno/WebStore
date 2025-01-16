@@ -11,10 +11,10 @@ namespace WebStore.OrderServer.Orders
 
         private List<OrderType> orderTypes;
         private List<OrderStatus> orderStatuses;
-
-        public OrderService(OrderRepository orderRepository)
+        public OrderService(OrderRepository orderRepository, ProductRepository productRepository)
         {
             _orderRepository = orderRepository;
+            _productRepository = productRepository;
             orderTypes = _orderRepository.GetOrderTypes().Result.Data.ToList();
             orderStatuses = _orderRepository.GetOrderStatuses().Result.Data.ToList();
         }

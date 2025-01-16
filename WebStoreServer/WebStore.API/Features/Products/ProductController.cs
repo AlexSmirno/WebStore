@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using WebStore.Domain.Products;
-using WebStoreServer.Features.gRPCSenders;
 
-namespace WebStoreServer.Features.Products
+namespace WebStore.API.Features.Products
 {
     [Route("api/[controller]")]
     [ApiController]

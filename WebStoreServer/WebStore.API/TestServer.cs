@@ -5,7 +5,7 @@ using Microsoft.Extensions.FileProviders;
 
 using WebStore.Domain.DAL;
 
-namespace WebStoreServer
+namespace WebStore.API
 {
     public class TestServer : WebApplicationFactory<Program>
     {

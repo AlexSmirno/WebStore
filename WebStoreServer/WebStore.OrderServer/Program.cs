@@ -24,6 +24,7 @@ namespace WebStore.OrderServer
 
             builder.Services.AddTransient<OrderService>();
             builder.Services.AddTransient<OrderRepository>();
+            builder.Services.AddTransient<ProductRepository>();
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {

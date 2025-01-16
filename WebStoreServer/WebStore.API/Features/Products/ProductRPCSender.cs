@@ -1,9 +1,10 @@
 ﻿using Grpc.Net.Client;
 using WebStore.Domain;
 using WebStore.Domain.Products;
-using WebStoreServer.Extention;
+using WebStore.API;
+using WebStore.API.Extention;
 
-namespace WebStoreServer.Features.gRPCSenders
+namespace WebStore.API.Features.Products
 {
     public class ProductRPCSender
     {
@@ -14,10 +15,12 @@ namespace WebStoreServer.Features.gRPCSenders
 
         public async Task<Result<List<Product>>> GetProductsAsync()
         {
-            using var channel = GrpcChannel.ForAddress("https://localhost:5005");
+            var channel = GrpcChannel.ForAddress("https://localhost:5005");
 
             var client = new ProductServiceGRPS.ProductServiceGRPSClient(channel);
             var reply = await client.GetProductsAsync(new VoidRequest());
+
+            channel.Dispose();
 
             var list = new List<Product>();
 

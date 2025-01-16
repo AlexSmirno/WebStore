@@ -5,7 +5,7 @@ using System.Net;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
 
-using WebStoreServer;
+using WebStore.API;
 using Microsoft.EntityFrameworkCore;
 using WebStore.Domain.DAL;
 

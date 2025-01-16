@@ -6,9 +6,7 @@ namespace WebStore.Domain.Clients
 {
     public class ClientAuthDTO
     {
-        public int Id { get; set; }
         public string? Mail { get; set; }
-        public string? Phone { get; set; }
         public string? Password { get; set; }
 
         public ClientAuthDTO() { }
@@ -16,7 +14,6 @@ namespace WebStore.Domain.Clients
         {
             Id = client.Id;
             Mail = client.Mail;
-            Phone = client.Phone;
             Password = client.Password;
         }
 
@@ -26,7 +23,6 @@ namespace WebStore.Domain.Clients
 
             cl.Id = Id;
             cl.Mail = Mail;
-            cl.Phone = Phone;
             cl.Password = Password;
 
             return cl;

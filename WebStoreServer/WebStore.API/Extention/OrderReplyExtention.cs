@@ -1,7 +1,7 @@
 ﻿using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
 
-namespace WebStoreServer.Extention
+namespace WebStore.API.Extention
 {
     public static class OrderReplyExtention
     {
@@ -16,9 +16,15 @@ namespace WebStoreServer.Extention
             orderDTO.OrderType = orderReply.OrderType;
             orderDTO.Products = new List<Product>();
 
-            foreach (var product in orderReply.ProductList.Products)
+            if (orderReply.ProductList != null)
             {
-                var productReply = new ProductReply();
+                foreach (var productReply in orderReply.ProductList.Products)
+                {
+                    var product = new Product();
+                    product.Id = productReply.ProductId;
+                    product.Count = productReply.Count;
+                    orderDTO.Products.Add(product);
+                }
             }
 
             return orderDTO;

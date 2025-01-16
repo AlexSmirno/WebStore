@@ -6,7 +6,7 @@ using RabbitMQ.Client;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Rabbit;
 
-namespace WebStoreServer.Features.RabbitMQSender
+namespace WebStore.API.Features.Orders
 {
     public class OrderMQSender
     {

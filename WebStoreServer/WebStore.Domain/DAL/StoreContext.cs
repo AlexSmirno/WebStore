@@ -10,7 +10,6 @@ namespace WebStore.Domain.DAL
     {
         public StoreContext(DbContextOptions options) : base(options)
         {
-            string name = Database.GetDbConnection().Database;
             //Database.EnsureDeleted();
             Database.EnsureCreated();
         }

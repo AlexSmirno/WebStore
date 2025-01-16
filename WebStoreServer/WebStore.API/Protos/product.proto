@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "WebStoreServer";
+option csharp_namespace = "WebStore.API";
 
 service ProductServiceGRPS {
   rpc GetProducts (VoidRequest) returns (ListReply);

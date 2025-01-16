@@ -23,6 +23,7 @@ namespace WebStore.DataServer.Services
             {
                 var newOrder = new OrderReply();
                 newOrder.FromOrder(order);
+                reply.Orders.Add(newOrder);
             }
 
             return reply;

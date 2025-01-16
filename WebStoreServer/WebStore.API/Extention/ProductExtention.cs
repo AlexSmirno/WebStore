@@ -1,6 +1,6 @@
 ﻿using WebStore.Domain.Products;
 
-namespace WebStoreServer.Extention
+namespace WebStore.API.Extention
 {
     public static class ProductExtension
     {

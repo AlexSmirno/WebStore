@@ -54,13 +54,15 @@ namespace WebStore.DataServer.Extention
 
             var list = new ProductList();
 
-            foreach (var product in orderReply.ProductList.Products)
+            foreach (var productInfo in order.ProductOrderInfos)
             {
                 var productReply = new ProductReply();
-                productReply.ProductId = product.ProductId;
-                productReply.Count = product.Count;
+                productReply.ProductId = productInfo.ProductId;
+                productReply.Count = productInfo.Count;
                 list.Products.Add(productReply);
             }
+
+            orderReply.ProductList = list;
         }
     }
 }

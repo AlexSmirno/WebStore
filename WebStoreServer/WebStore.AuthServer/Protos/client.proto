@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option csharp_namespace = "WebStore.AuthServer";
+
+
+service ClientServiceGRPS {
+  rpc Registration (ClientMessage) returns (BoolRequest);
+  rpc Authentication (ClientDTOMessage) returns (BoolRequest);
+}
+
+message ClientMessage {
+  int Id = 1;
+  string Mail = 2;
+  string FullName = 3;
+  string Phone = 4;
+  string Password = 5;
+}
+
+message ClientDTOMessage {
+  string Mail = 2;
+  string Password = 5;
+}
+
+message BoolRequest{
+	bool isSuccess = 1;
+}

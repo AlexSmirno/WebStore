@@ -2,7 +2,7 @@
 
 using System.Net.Http.Json;
 
-using WebStoreServer;
+using WebStore.API;
 using WebStore.Domain.Products;
 using WebStore.Domain.DAL;
 

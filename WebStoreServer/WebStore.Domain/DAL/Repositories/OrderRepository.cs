@@ -36,7 +36,12 @@ namespace WebStore.Domain.DAL.Repositories
 
         public async Task<Result<IEnumerable<Order>>> GetOrdersByClientIdAsync(int id)
         {
-            var orders = _context.Orders.Include(o => o.ProductOrderInfos).Include(o => o.Client).Where(o => o.ClientId == id);
+            var orders = _context.Orders
+                .Include(o => o.ProductOrderInfos)
+                .Include(o => o.Client)
+                .Include(o => o.OrderType)
+                .Include(o => o.OrderStatus)
+                .Where(o => o.ClientId == id);
 
             return await Task.FromResult(new Result<IEnumerable<Order>>(orders));
         }
