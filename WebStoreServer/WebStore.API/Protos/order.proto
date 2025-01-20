@@ -3,10 +3,10 @@ syntax = "proto3";
 option csharp_namespace = "WebStore.API";
 
 service OrderServiceGRPS {
-  rpc GetOrdersByClientId (ClientRequest) returns (OrderListReply);
+  rpc GetOrdersByClientId (ClientIdRequest) returns (OrderListReply);
 }
 
-message ClientRequest {
+message ClientIdRequest {
   int32 Id = 1;
 }
 

@@ -12,9 +12,9 @@ namespace WebStore.Domain.DAL.Repositories
             _context = context;
         }
 
-        public async Task<Client> GetClientById(int Id)
+        public async Task<Client> GetClientByMailAsync(string mail)
         {
-            var client = await _context.Clients.FirstOrDefaultAsync(p => p.Id == Id);
+            var client = await _context.Clients.FirstOrDefaultAsync(p => p.Mail == mail);
 
             return await Task.FromResult(client);
         }

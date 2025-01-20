@@ -1,12 +1,9 @@
 syntax = "proto3";
 
-option csharp_namespace = "WebStore.AuthServer";
-
+option csharp_namespace = "WebStore.DataServer";
 
 service ClientServiceGRPS {
   rpc Registration (ClientRequest) returns (BoolReply);
-  rpc Authentication (ClientDTORequest) returns (JWTMessage);
-  rpc Authorization (JWTMessage) returns (BoolReply);
 }
 
 message ClientRequest {
@@ -17,15 +14,6 @@ message ClientRequest {
   string Password = 5;
 }
 
-message ClientDTORequest {
-  string Mail = 2;
-  string Password = 5;
-}
-
 message BoolReply{
 	bool isSuccess = 1;
-}
-
-message JWTMessage{
-	string JWT = 1;
 }

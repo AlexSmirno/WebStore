@@ -18,7 +18,7 @@ namespace WebStore.API.Features.Orders
             using var channel = GrpcChannel.ForAddress("https://localhost:5005");
 
             var client = new OrderServiceGRPS.OrderServiceGRPSClient(channel);
-            var clientRequest = new ClientRequest();
+            var clientRequest = new ClientIdRequest();
             clientRequest.Id = id;
             var reply = await client.GetOrdersByClientIdAsync(clientRequest);
 

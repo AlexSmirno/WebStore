@@ -1,6 +1,6 @@
 ﻿
 
-namespace WebStore.Domain
+namespace WebStore.Contracts
 {
     public class DecimalValue
     {

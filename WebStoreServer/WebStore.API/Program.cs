@@ -2,6 +2,7 @@
 using WebStore.Domain.Rabbit;
 using WebStore.API.Features.Orders;
 using WebStore.API.Features.Products;
+using WebStore.API.Features.Clients;
 
 namespace WebStore.API
 {
@@ -22,6 +23,7 @@ namespace WebStore.API
 
             builder.Services.AddTransient<ProductRPCSender>();
             builder.Services.AddTransient<OrderRPCSender>();
+            builder.Services.AddTransient<ClientRPCSender>();
 
             builder.Services.AddTransient<OrderMQSender>();
             

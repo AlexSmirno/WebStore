@@ -30,6 +30,7 @@
 	<ItemGroup>
 		<Protobuf Include="Protos\product.proto" GrpcServices="Client" />
 		<Protobuf Include="Protos\order.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\client.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 </Project>

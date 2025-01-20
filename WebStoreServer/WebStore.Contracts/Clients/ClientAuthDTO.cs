@@ -1,8 +1,8 @@
 ﻿
 
-using WebStore.Domain.Orders;
+using WebStore.Contracts.Orders;
 
-namespace WebStore.Domain.Clients
+namespace WebStore.Contracts.Clients
 {
     public class ClientAuthDTO
     {

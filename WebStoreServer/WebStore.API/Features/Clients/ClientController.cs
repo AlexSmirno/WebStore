@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebStore.Domain.Clients;
 
 namespace WebStore.API.Features.Clients
@@ -8,25 +7,19 @@ namespace WebStore.API.Features.Clients
     [ApiController]
     public class ClientController : ControllerBase
     {
-        public ClientController()
+        private ClientRPCSender _clientRPCSender;
+        public ClientController(ClientRPCSender clientRPCSender)
         {
-
+            _clientRPCSender = clientRPCSender;
         }
 
         [HttpPost("/Registration", Name = "Registration")]
         public async Task<bool> Registration([FromBody] Client client)
         {
+            bool result = await _clientRPCSender.ClientRegistration(client);
 
-
-            return false;
+            return await Task.FromResult(result);
         }
 
-        [HttpPost("/Authentication", Name = "Authentication")]
-        public async Task<bool> Authentication([FromBody] Client client)
-        {
-
-
-            return false;
-        }
     }
 }

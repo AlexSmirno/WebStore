@@ -13,7 +13,7 @@ namespace WebStore.DataServer.Services
             _orderRepository = orderRepository;
         }
 
-        public override async Task<OrderListReply> GetOrdersByClientId(ClientRequest client, ServerCallContext context)
+        public override async Task<OrderListReply> GetOrdersByClientId(ClientIdRequest client, ServerCallContext context)
         {
             var orders = await _orderRepository.GetOrdersByClientIdAsync(client.Id);
 
