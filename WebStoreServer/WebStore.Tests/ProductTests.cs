@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 
 using WebStore.API;
 using WebStore.Domain.Products;
-using WebStore.Domain.DAL;
+using WebStore.Domain.DAL.EF;
 
 namespace Tests
 {

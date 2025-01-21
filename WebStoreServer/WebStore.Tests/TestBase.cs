@@ -7,7 +7,7 @@ using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 
 using WebStore.API;
-using WebStore.Domain.DAL;
+using WebStore.Domain.DAL.EF;
 
 namespace Tests
 {

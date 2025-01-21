@@ -46,7 +46,6 @@ namespace WebStore.OrderServer
         {
             await _channel.QueueDeclareAsync(queueName, false, false, false, null);
 
-            Console.WriteLine("Something recieved");
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.ReceivedAsync += async (model, ea) =>
             {
@@ -56,9 +55,6 @@ namespace WebStore.OrderServer
                 try
                 {
                     OrderDTO order = JsonSerializer.Deserialize<OrderDTO>(message);
-                    Console.WriteLine("Get order for " + order.Date + 
-                                      " " + order.Time + " with " + 
-                                      order.Products.Count + " products");
 
                     _orderService.CreateOrder(order);
 
@@ -72,7 +68,6 @@ namespace WebStore.OrderServer
 
             await _channel.BasicConsumeAsync(queueName, false, consumer);
         }
-
 
         public override void Dispose()
         {

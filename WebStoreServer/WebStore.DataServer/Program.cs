@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+
 using WebStore.DataServer.Services;
 
-using WebStore.Domain.DAL.Repositories;
-using WebStore.Domain.DAL;
+using WebStore.Domain.DAL.EF;
+using WebStore.Domain.DAL.Interfaces;
+using WebStore.Domain.DAL.EF.Repositories;
 
 namespace WebStore.DataServer
 {
@@ -15,9 +17,9 @@ namespace WebStore.DataServer
             // Add services to the container.
             builder.Services.AddGrpc();
 
-            builder.Services.AddTransient<ProductRepository>();
-            builder.Services.AddTransient<OrderRepository>();
-            builder.Services.AddTransient<ClientRepository>();
+            builder.Services.AddTransient<IProductRepository, ProductRepository>();
+            builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+            builder.Services.AddTransient<IClientRepository, ClientRepository>();
 
             builder.Services.AddDbContext<StoreContext>(options =>
             {

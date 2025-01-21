@@ -7,7 +7,7 @@ using WebStore.Domain.Products;
 
 using WebStore.API;
 using Microsoft.EntityFrameworkCore;
-using WebStore.Domain.DAL;
+using WebStore.Domain.DAL.EF;
 
 namespace Tests
 {

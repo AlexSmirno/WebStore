@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-
-using WebStore.Domain.DAL;
+using WebStore.Domain.DAL.EF;
 
 namespace WebStore.API
 {

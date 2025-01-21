@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebStore.Domain;
 using WebStore.Domain.Clients;
+using WebStore.Domain.DAL.Interfaces;
 
-namespace WebStore.Domain.DAL.Repositories
+namespace WebStore.Domain.DAL.EF.Repositories
 {
-    public class ClientRepository
+    public class ClientRepository : IClientRepository
     {
         private StoreContext _context;
         public ClientRepository(StoreContext context)

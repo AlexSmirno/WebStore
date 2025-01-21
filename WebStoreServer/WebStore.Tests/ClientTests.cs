@@ -5,8 +5,8 @@ using System.Net;
 using System.Net.Http.Json;
 
 using WebStore.Domain.Clients;
-using WebStore.Domain.DAL;
 using WebStore.API;
+using WebStore.Domain.DAL.EF;
 
 namespace Tests
 {

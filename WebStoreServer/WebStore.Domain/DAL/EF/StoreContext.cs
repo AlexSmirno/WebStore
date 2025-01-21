@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
 using WebStore.Domain.Clients;
 using WebStore.Domain.Orders;
 using WebStore.Domain.Products;
 
-namespace WebStore.Domain.DAL
+namespace WebStore.Domain.DAL.EF
 {
     public class StoreContext : DbContext
     {

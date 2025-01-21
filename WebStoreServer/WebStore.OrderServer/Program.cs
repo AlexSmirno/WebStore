@@ -1,9 +1,9 @@
 
 using WebStore.Domain.Rabbit;
 using WebStore.OrderServer.Orders;
-using WebStore.Domain.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
-using WebStore.Domain.DAL;
+using WebStore.Domain.DAL.EF.Repositories;
+using WebStore.Domain.DAL.EF;
 
 namespace WebStore.OrderServer
 {

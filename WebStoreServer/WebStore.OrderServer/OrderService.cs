@@ -1,6 +1,6 @@
 ﻿using WebStore.Domain;
 using WebStore.Domain.Orders;
-using WebStore.Domain.DAL.Repositories;
+using WebStore.Domain.DAL.EF.Repositories;
 
 namespace WebStore.OrderServer.Orders
 {
@@ -15,30 +15,24 @@ namespace WebStore.OrderServer.Orders
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
-            orderTypes = _orderRepository.GetOrderTypes().Result.Data.ToList();
-            orderStatuses = _orderRepository.GetOrderStatuses().Result.Data.ToList();
+            orderTypes = _orderRepository.GetOrderTypesAsync().Result.ToList();
+            orderStatuses = _orderRepository.GetOrderStatusesAsync().Result.ToList();
         }
 
-        public async Task<Result<bool>> CreateOrder(OrderDTO newOrder)
+        public async Task<bool> CreateOrder(OrderDTO newOrder)
         {
             var productResult = await _productRepository
                 .GetProductByIdsAsync(newOrder.Products.Select(p => p.Id)
                 .ToList());
 
-            if (productResult.IsSucceeded == false || productResult.Data.Count != newOrder.Products.Count)
+            if (productResult.Count != newOrder.Products.Count)
             {
-                return await Task.FromResult(new Result<bool>()
-                {
-                    IsSucceeded = false,
-                    ErrorCode = 404,
-                    ErrorMessage = "There are no these products",
-                    Data = false
-                });
+                return await Task.FromResult(false);
             }
 
             var order = newOrder.ToOrder();
 
-            foreach (var product in productResult.Data)
+            foreach (var product in productResult)
             {
                 order.ProductOrderInfos.Find(poi => poi.ProductId == product.Id).Product = product;
             }
@@ -59,31 +53,16 @@ namespace WebStore.OrderServer.Orders
                 return await CreateOutOrder(order);
             }
 
-            return new Result<bool> { 
-                Data = false,
-                ErrorCode = 404, 
-                ErrorMessage = "There is no this order type: " + newOrder.OrderType, 
-                IsSucceeded = false 
-            };
+            return false;
         }
 
         //Добавление продуктов
-        private async Task<Result<bool>> CreateInOrder(Order order)
+        private async Task<bool> CreateInOrder(Order order)
         {
             if (order.ProductOrderInfos == null)
             {
-                return await Task.FromResult(new Result<bool>()
-                    {
-                        IsSucceeded = false,
-                        ErrorCode = 404,
-                        ErrorMessage = "Unknown products",
-                        Data = false
-                    }
-                );
+                return false;
             }
-
-            //Набудующее
-            //await _sender.Send("Do it!");
 
             foreach (var item in order.ProductOrderInfos)
             {
@@ -96,21 +75,12 @@ namespace WebStore.OrderServer.Orders
         }
 
         //Удаление продуктов
-        private async Task<Result<bool>> CreateOutOrder(Order order)
+        private async Task<bool> CreateOutOrder(Order order)
         {
             if (order.ProductOrderInfos == null)
             {
-                return await Task.FromResult(new Result<bool>()
-                {
-                    IsSucceeded = false,
-                    ErrorCode = 404,
-                    ErrorMessage = "Unknown products",
-                    Data = false
-                });
+                return false;
             }
-
-            //Набудующее
-            //await _sender.Send("Do it!");
 
             foreach (var item in order.ProductOrderInfos)
             {
@@ -120,13 +90,7 @@ namespace WebStore.OrderServer.Orders
                 }
                 else
                 {
-                    return await Task.FromResult(new Result<bool>()
-                    {
-                        IsSucceeded = false,
-                        ErrorCode = 400,
-                        ErrorMessage = "Not enought product: " + item.Product.Id + " " + item.Product.ProductName,
-                        Data = false
-                    });
+                    return false;
                 }
             }
 

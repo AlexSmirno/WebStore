@@ -1,6 +1,6 @@
 ﻿using Grpc.Core;
 using WebStore.DataServer.Extention;
-using WebStore.Domain.DAL.Repositories;
+using WebStore.Domain.DAL.EF.Repositories;
 
 namespace WebStore.DataServer.Services
 {
@@ -18,7 +18,8 @@ namespace WebStore.DataServer.Services
         {
             bool result = await _clientRepository.AddClientAsync(request.ToOrderDTO());
 
-            return await Task.FromResult(new BoolReply() { IsSuccess = result });
+            var reply = new BoolReply() { IsSuccess = result };
+            return await Task.FromResult(reply);
         }
     }
 }
