@@ -3,6 +3,7 @@ using WebStore.Domain.Rabbit;
 using WebStore.API.Features.Orders;
 using WebStore.API.Features.Products;
 using WebStore.API.Features.Clients;
+using Serilog;
 
 namespace WebStore.API
 {
@@ -11,6 +12,13 @@ namespace WebStore.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Logging.ClearProviders();
+
+            builder.Host.UseSerilog((context, loggerConfiguration) =>
+            {
+                loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+            });
 
             builder.Services.AddControllers();
 
@@ -40,6 +48,8 @@ namespace WebStore.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.UseSerilogRequestLogging();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
